@@ -1,21 +1,16 @@
+// FINAL CODE FOR: src/app/layout.tsx
+
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
-import Providers from "../components/Providers";
+import Providers from "@/components/Providers";
+import Header from "@/components/shared/Header";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "BenefitPlus - Premium Benefits Platform",
-  description: "Discover exclusive benefits and experiences from premium partners",
+  title: "BenefitPlus - Local Discounts & Events",
+  description: "Connecting members with local discounts, events, and partner offers.",
 };
 
 export default function RootLayout({
@@ -25,11 +20,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className={inter.className}>
         <Providers>
-          {children}
+          <Header /> 
+          <main>{children}</main>
         </Providers>
       </body>
     </html>

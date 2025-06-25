@@ -1,11 +1,11 @@
 'use client';
 
 import React from 'react';
-import { useAuthModal } from '../src/hooks/useAuthModal';
+import { useAuthModal } from '../../hooks/useAuthModal';
 import { useSession } from 'next-auth/react';
 import Link from "next/link";
-import SignInModal from '../src/components/ui/auth/SignInModal';
-import RegisterModal from '../src/components/ui/auth/RegisterModal';
+import SignInModal from '../ui/auth/SignInModal';
+import RegisterModal from '../ui/auth/RegisterModal';
 
 export default function Header() {
   const { 
