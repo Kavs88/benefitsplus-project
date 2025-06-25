@@ -46,8 +46,11 @@ export default function Header() {
                 <div className="animate-pulse bg-gray-200 h-10 w-36 rounded-lg"></div>
               ) : session?.user ? (
                 <div className="flex items-center space-x-4">
-                  <Link href="/dashboard/member" className="font-semibold text-gray-700 hover:text-blue-600 transition-colors px-3 py-2 text-sm">
-                    My Dashboard
+                  <Link href="/events/create" className="font-semibold text-gray-700 hover:text-blue-600 transition-colors px-3 py-2 text-sm">
+                    Create Event
+                  </Link>
+                  <Link href="/dashboard/my-events" className="font-semibold text-gray-700 hover:text-blue-600 transition-colors px-3 py-2 text-sm">
+                    My Events
                   </Link>
                   <button
                     onClick={handleSignOut}

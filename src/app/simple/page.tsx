@@ -53,7 +53,7 @@ export default async function SimpleHomePage() {
             <EmptyState
               message="No upcoming events at the moment. Check back soon for new experiences!"
               buttonText="Browse All Events"
-              onButtonPress={() => window.location.href = '/events'}
+              buttonLink="/events"
             />
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -81,7 +81,7 @@ export default async function SimpleHomePage() {
             <EmptyState
               message="No featured discounts available right now. New offers coming soon!"
               buttonText="View All Discounts"
-              onButtonPress={() => window.location.href = '/discounts'}
+              buttonLink="/discounts"
             />
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">

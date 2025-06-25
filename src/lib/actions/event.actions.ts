@@ -104,4 +104,21 @@ export async function deleteEvent({ eventId }: { eventId: string }) {
     console.error('Error deleting event:', error);
     throw new Error('Failed to delete event.');
   }
+}
+
+export async function getEventsByOrganizer({ userId }: { userId: string }) {
+  try {
+    const events = await prisma.event.findMany({
+      where: {
+        partnerId: userId,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+    return JSON.parse(JSON.stringify(events));
+  } catch (error) {
+    console.error('Error fetching events by organizer:', error);
+    return [];
+  }
 } 

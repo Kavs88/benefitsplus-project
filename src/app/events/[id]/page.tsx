@@ -39,7 +39,7 @@ export default async function EventDetailPage({ params }: { params: { id: string
         {isOrganizer && (
           <div className="flex gap-4">
             <Button asChild>
-              <Link href={`/events/${event.id}/update`}>Update Event</Link>
+              <Link href={`/events/${event.id}/update`}>Edit Event</Link>
             </Button>
             <DeleteConfirmation eventId={event.id} />
           </div>
