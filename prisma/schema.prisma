@@ -1,3 +1,6 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -6,6 +9,8 @@ datasource db {
   provider = "sqlite"
   url      = "file:./dev.db"
 }
+
+// --- CORE MODELS ---
 
 model User {
   id              String    @id @default(uuid())
@@ -18,11 +23,96 @@ model User {
   emailVerified   DateTime?
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
+
+  // Relations
   accounts        Account[]
-  eventsCreated   Event[]   @relation("PartnerEvents")
-  reviewsAuthored Review[]  @relation("AuthorReviews")
   sessions        Session[]
+  eventsCreated   Event[]    @relation("PartnerEvents")
+  reviewsAuthored Review[]   @relation("AuthorReviews")
+  
+  // --- ADDED --- Relations for new models
+  discountsCreated  Discount[] @relation("PartnerDiscounts")
+  favoriteEvents    Event[]    @relation("UserFavoriteEvents")
+  favoriteDiscounts Discount[] @relation("UserFavoriteDiscounts")
 }
+
+model Event {
+  id          String   @id @default(uuid())
+  title       String
+  description String?
+  date        DateTime
+  image       String?
+  location    String
+  city        String
+  partnerId   String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  partner     User     @relation("PartnerEvents", fields: [partnerId], references: [id])
+  reviews     Review[]
+
+  // --- ADDED --- Relations for categories and favorites
+  categories  Category[]
+  favoritedBy User[]     @relation("UserFavoriteEvents")
+}
+
+// --- NEW MODEL: Discount ---
+// Represents a discount, offer, or deal from a partner.
+model Discount {
+  id          String   @id @default(uuid())
+  title       String
+  description String
+  image       String?
+  offer       String   // e.g., "20% Off", "Buy One Get One Free"
+  promoCode   String?  @unique
+  terms       String?
+  startDate   DateTime
+  endDate     DateTime
+  partnerId   String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  partner     User       @relation("PartnerDiscounts", fields: [partnerId], references: [id])
+
+  // --- ADDED --- Relations for categories and favorites
+  categories  Category[]
+  favoritedBy User[]     @relation("UserFavoriteDiscounts")
+}
+
+
+// --- SUPPORTING MODELS ---
+
+model Review {
+  id        String   @id @default(uuid())
+  rating    Int
+  comment   String?
+  authorId  String
+  eventId   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  author    User     @relation("AuthorReviews", fields: [authorId], references: [id])
+  event     Event    @relation(fields: [eventId], references: [id])
+}
+
+// --- NEW MODEL: Category ---
+// Used for filtering Events and Discounts
+model Category {
+  id        String     @id @default(uuid())
+  name      String     @unique // e.g., "Food & Drink"
+  slug      String     @unique // e.g., "food-and-drink"
+
+  // Relations
+  events    Event[]
+  discounts Discount[]
+}
+
+
+// --- NEXT-AUTH MODELS ---
+// Do not need to be modified
 
 model Account {
   id                String  @id @default(cuid())
@@ -58,32 +148,8 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-model Event {
-  id          String   @id @default(uuid())
-  title       String
-  description String?
-  date        DateTime
-  image       String?
-  location    String
-  city        String
-  partnerId   String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  partner     User     @relation("PartnerEvents", fields: [partnerId], references: [id])
-  reviews     Review[]
-}
 
-model Review {
-  id        String   @id @default(uuid())
-  rating    Int
-  comment   String?
-  authorId  String
-  eventId   String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  author    User     @relation("AuthorReviews", fields: [authorId], references: [id])
-  event     Event    @relation(fields: [eventId], references: [id])
-}
+// --- ENUMS ---
 
 enum Role {
   member
