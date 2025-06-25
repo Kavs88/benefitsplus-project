@@ -5,7 +5,9 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
+import { useRouter } from "next/navigation";
+import { createEvent } from "@/lib/actions/event.actions";
+import { eventFormSchema, EventFormValues } from "@/types";
 
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -14,23 +16,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { FileUploader } from "@/components/shared/FileUploader";
 
-// Define the validation schema for the form
-const formSchema = z.object({
-  title: z.string().min(3, 'Title must be at least 3 characters.'),
-  description: z.string().min(10, 'Description must be at least 10 characters.'),
-  location: z.string().min(3, 'Location is required.'),
-  imageUrl: z.string().url('Must be a valid URL.'),
-  startDateTime: z.string(), // We will replace this with a proper date type later
-  endDateTime: z.string(),
-  price: z.string(),
-  isFree: z.boolean(),
-  category: z.string(),
-});
-
 function EventForm() {
+  const router = useRouter();
   // 1. Define your form.
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<EventFormValues>({
+    resolver: zodResolver(eventFormSchema),
     defaultValues: {
       title: "",
       description: "",
@@ -44,13 +34,21 @@ function EventForm() {
     },
   });
 
-  // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // This is where we will add the server action to save the data later.
-    console.log(values);
-  }
-
+  const { formState: { isSubmitting } } = form;
   const isFree = form.watch('isFree');
+  const userId = "placeholder-user-id"; // Replace with real user ID from session
+
+  async function onSubmit(values: EventFormValues) {
+    try {
+      const newEvent = await createEvent({ event: values, userId });
+      if (newEvent && newEvent.id) {
+        router.push(`/events/${newEvent.id}`);
+      }
+    } catch (error) {
+      console.error('Failed to create event:', error);
+      // Optionally show a toast notification here
+    }
+  }
 
   return (
     <Form {...form}>
@@ -190,7 +188,9 @@ function EventForm() {
           />
         </div>
 
-        <Button type="submit" size="lg" className="w-full">Create Event</Button>
+        <Button type="submit" size="lg" className="w-full" disabled={isSubmitting}>
+          {isSubmitting ? "Creating..." : "Create Event"}
+        </Button>
       </form>
     </Form>
   );
