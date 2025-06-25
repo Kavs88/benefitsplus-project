@@ -2,7 +2,10 @@ import { Prisma } from '@prisma/client';
 import { z } from "zod";
 
 const eventWithDetails = Prisma.validator<Prisma.EventDefaultArgs>()({
-  include: { partner: true, categories: true },
+  include: {
+    partner: true,
+    categories: true,
+  },
 });
 export type DetailedEvent = Prisma.EventGetPayload<typeof eventWithDetails>;
 

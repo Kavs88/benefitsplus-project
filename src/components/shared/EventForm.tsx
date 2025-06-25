@@ -4,12 +4,11 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { createEvent } from "@/lib/actions/event.actions";
-import { eventFormSchema, EventFormValues } from "@/types";
+import { createEvent, updateEvent } from "@/lib/actions/event.actions";
+import { eventFormSchema, EventFormValues, DetailedEvent } from "@/types";
 import { format } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { type DateRange } from "react-day-picker";
 
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -21,34 +20,78 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Calendar } from "@/components/ui/calendar";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-export function EventForm({ userId }: { userId: string }) {
+type EventFormProps = {
+  userId: string;
+  type: "Create" | "Update";
+  event?: DetailedEvent;
+};
+
+export function EventForm({ userId, type, event }: EventFormProps) {
   const router = useRouter();
+
+  const initialValues =
+    event && type === "Update"
+      ? {
+          ...event,
+          description: event.description || "",
+          startDateTime: new Date(event.startDateTime).toISOString(),
+          endDateTime: new Date(event.endDateTime).toISOString(),
+          category: event.categories.length > 0 ? event.categories[0].id : "",
+        }
+      : {
+          title: "",
+          description: "",
+          location: "",
+          imageUrl: "",
+          startDateTime: new Date().toISOString(),
+          endDateTime: new Date().toISOString(),
+          price: "0",
+          isFree: false,
+          category: "",
+        };
+
   const form = useForm<EventFormValues>({
     resolver: zodResolver(eventFormSchema),
-    defaultValues: {
-      title: "",
-      description: "",
-      location: "",
-      imageUrl: "",
-      startDateTime: "",
-      endDateTime: "",
-      price: "0",
-      isFree: false,
-      category: "",
-    },
+    defaultValues: initialValues,
   });
 
   const { formState: { isSubmitting } } = form;
-  const isFree = form.watch('isFree');
+  const isFree = form.watch("isFree");
 
   async function onSubmit(values: EventFormValues) {
-    try {
-      const newEvent = await createEvent({ event: values, userId });
-      if (newEvent && newEvent.id) {
-        router.push(`/events/${newEvent.id}`);
+    if (type === "Create") {
+      try {
+        const newEvent = await createEvent({ event: values, userId });
+        if (newEvent) {
+          form.reset();
+          router.push(`/events/${newEvent.id}`);
+        }
+      } catch (error) {
+        console.error(error);
       }
-    } catch (error) {
-      console.error('Failed to create event:', error);
+    }
+
+    if (type === "Update") {
+      if (!event) {
+        router.back();
+        return;
+      }
+
+      try {
+        // We need to make sure the payload matches what the action expects.
+        // The action expects a complete event object.
+        const eventData = { ...event, ...values };
+        const updatedEvent = await updateEvent({
+          userId,
+          event: eventData,
+        });
+
+        if (updatedEvent) {
+          router.push(`/events/${updatedEvent.id}`);
+        }
+      } catch (error) {
+        console.log(error);
+      }
     }
   }
 
@@ -92,6 +135,7 @@ export function EventForm({ userId }: { userId: string }) {
             )}
           />
         </div>
+
         <FormField
           control={form.control}
           name="description"
@@ -105,6 +149,7 @@ export function EventForm({ userId }: { userId: string }) {
             </FormItem>
           )}
         />
+        
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <FormField
             control={form.control}
@@ -133,6 +178,7 @@ export function EventForm({ userId }: { userId: string }) {
             )}
           />
         </div>
+        
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <FormField
             control={form.control}
@@ -211,6 +257,7 @@ export function EventForm({ userId }: { userId: string }) {
             )}
           />
         </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-end">
           <FormField
             control={form.control}
@@ -241,8 +288,9 @@ export function EventForm({ userId }: { userId: string }) {
             )}
           />
         </div>
+
         <Button type="submit" size="lg" className="w-full" disabled={isSubmitting}>
-          {isSubmitting ? "Creating..." : "Create Event"}
+          {isSubmitting ? 'Submitting...' : `${type} Event`}
         </Button>
       </form>
     </Form>

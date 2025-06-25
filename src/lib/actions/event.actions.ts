@@ -1,7 +1,7 @@
 "use server";
 import { revalidatePath } from 'next/cache';
-import { prisma } from '@/src/lib/db';
-import { EventFormValues } from '@/src/types';
+import { prisma } from '@/lib/db';
+import { EventFormValues, DetailedEvent } from '@/types';
 
 export async function createEvent({ event, userId }: { event: EventFormValues, userId:string }) {
   try {
@@ -15,7 +15,7 @@ export async function createEvent({ event, userId }: { event: EventFormValues, u
         endDateTime: new Date(event.endDateTime),
         price: event.price,
         isFree: event.isFree,
-        organizer: { connect: { id: userId } },
+        partner: { connect: { id: userId } },
       },
     });
     if (newEvent) { revalidatePath('/events'); }
@@ -31,11 +31,77 @@ export async function getAllEvents({ limit }: { limit: number }) {
     const events = await prisma.event.findMany({
       take: limit,
       orderBy: { startDateTime: 'asc' },
-      include: { organizer: true, categories: true },
+      include: { partner: true, categories: true },
     });
     return JSON.parse(JSON.stringify(events));
   } catch (error) {
     console.error('Error fetching events:', error);
     return [];
+  }
+}
+
+export async function getEventById(eventId: string) {
+  try {
+    const event = await prisma.event.findUnique({
+      where: { id: eventId },
+      include: { partner: true, categories: true },
+    });
+
+    if (!event) {
+      throw new Error('Event not found');
+    }
+
+    return JSON.parse(JSON.stringify(event));
+  } catch (error) {
+    console.error('Error fetching event by ID:', error);
+    throw new Error('Failed to fetch event.');
+  }
+}
+
+export async function updateEvent({ event, userId }: { event: DetailedEvent & { id: string }, userId: string }) {
+  try {
+    const eventToUpdate = await prisma.event.findUnique({
+      where: { id: event.id },
+    });
+
+    if (!eventToUpdate || eventToUpdate.partnerId !== userId) {
+      throw new Error('Unauthorized or event not found');
+    }
+
+    const updatedEvent = await prisma.event.update({
+      where: { id: event.id },
+      data: {
+        title: event.title,
+        description: event.description,
+        location: event.location,
+        imageUrl: event.imageUrl,
+        startDateTime: new Date(event.startDateTime),
+        endDateTime: new Date(event.endDateTime),
+        price: event.price,
+        isFree: event.isFree,
+      },
+    });
+
+    if (updatedEvent) {
+      revalidatePath(`/events/${event.id}`);
+      revalidatePath('/events');
+    }
+    
+    return JSON.parse(JSON.stringify(updatedEvent));
+  } catch (error) {
+    console.error('Error updating event:', error);
+    throw new Error('Failed to update event.');
+  }
+}
+
+export async function deleteEvent({ eventId }: { eventId: string }) {
+  try {
+    await prisma.event.delete({
+      where: { id: eventId },
+    });
+    revalidatePath('/events');
+  } catch (error) {
+    console.error('Error deleting event:', error);
+    throw new Error('Failed to delete event.');
   }
 } 

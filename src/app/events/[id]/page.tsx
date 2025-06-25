@@ -3,35 +3,21 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { DetailedEvent } from '@/src/types'; // Using our centralized type
-import { formatDateTime } from '@/src/lib/utils'; // Using our centralized utility
-import { Button } from '@/src/components/ui/button'; // Using our standardized Button
-import { Badge } from '@/src/components/ui/badge'; // Using our standardized Badge
+import { DetailedEvent } from '@/types';
+import { formatDateTime } from '@/lib/utils';
+import { getEventById } from '@/lib/actions/event.actions';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import { CalendarDays, Clock, MapPin, User, Tag } from 'lucide-react';
-
-// This function fetches event details using a relative URL (works in dev and prod)
-async function getEventDetails(id: string): Promise<DetailedEvent | null> {
-  try {
-    // Using a relative URL is best practice
-    const response = await fetch(`/api/events/${id}`, {
-      next: { revalidate: 60 } // Cache data for 60 seconds
-    });
-    
-    if (!response.ok) {
-      return null; // Return null if not found or other error
-    }
-    
-    return await response.json();
-  } catch (error) {
-    console.error('Error fetching event details:', error);
-    return null;
-  }
-}
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
+import { DeleteConfirmation } from '@/components/shared/DeleteConfirmation';
 
 export default async function EventDetailPage({ params }: { params: { id: string } }) {
-  const event = await getEventDetails(params.id);
+  const session = await getServerSession(authOptions);
+  const userId = session?.user?.id;
+  const event: DetailedEvent | null = await getEventById(params.id);
 
-  // Handle the case where the event is not found
   if (!event) {
     return (
       <main className="wrapper my-8 text-center">
@@ -44,14 +30,27 @@ export default async function EventDetailPage({ params }: { params: { id: string
     );
   }
 
+  const isOrganizer = userId === event.partnerId;
+
   return (
     <section className="wrapper my-8">
+      <div className="flex justify-between items-start">
+        <h1 className="h1-bold mb-4">{event.title}</h1>
+        {isOrganizer && (
+          <div className="flex gap-4">
+            <Button asChild>
+              <Link href={`/events/${event.id}/update`}>Update Event</Link>
+            </Button>
+            <DeleteConfirmation eventId={event.id} />
+          </div>
+        )}
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
         
-        {/* Left Column: Image */}
         <div className="w-full h-[300px] md:h-auto rounded-lg overflow-hidden shadow-lg bg-gray-200">
           <Image
-            src={event.image || '/placeholder-event.jpg'} // Assuming 'image' field exists
+            src={event.imageUrl}
             alt={event.title}
             width={1000}
             height={1000}
@@ -60,14 +59,11 @@ export default async function EventDetailPage({ params }: { params: { id: string
           />
         </div>
 
-        {/* Right Column: Details */}
         <div className="flex flex-col gap-6">
-          <h1 className="h1-bold">{event.title}</h1>
-
           <div className="flex flex-wrap items-center gap-3">
             <Badge variant="secondary">
               <User className="w-4 h-4 mr-2" />
-              {event.organizer?.name || 'Unknown Organizer'}
+              {event.partner?.name || 'Unknown Organizer'}
             </Badge>
             {event.categories?.[0] && (
                <Badge>
