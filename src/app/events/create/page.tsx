@@ -7,11 +7,12 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 
-import { Button } from "@/src/components/ui/button";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/src/components/ui/form";
-import { Input } from "@/src/components/ui/input";
-import { Textarea } from "@/src/components/ui/textarea";
-import { Checkbox } from "@/src/components/ui/checkbox";
+import { Button } from "@/components/ui/button";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
+import { FileUploader } from "@/components/shared/FileUploader";
 
 // Define the validation schema for the form
 const formSchema = z.object({
@@ -22,7 +23,7 @@ const formSchema = z.object({
   startDateTime: z.string(), // We will replace this with a proper date type later
   endDateTime: z.string(),
   price: z.string(),
-  isFree: z.boolean().default(false),
+  isFree: z.boolean(),
   category: z.string(),
 });
 
@@ -99,7 +100,7 @@ function EventForm() {
         />
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-           <FormField
+          <FormField
             control={form.control}
             name="location"
             render={({ field }) => (
@@ -112,15 +113,14 @@ function EventForm() {
               </FormItem>
             )}
           />
-           <FormField
+          <FormField
             control={form.control}
             name="imageUrl"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Image URL</FormLabel>
+                <FormLabel>Event Image</FormLabel>
                 <FormControl>
-                  {/* This will become an image uploader later */}
-                  <Input placeholder="https://..." {...field} />
+                  <FileUploader onFieldChange={field.onChange} imageUrl={field.value} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
