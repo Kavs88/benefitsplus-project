@@ -1,231 +1,67 @@
-# BenefitPlus 🚀
+# BenefitPlus Project
 
-A full-stack web application for discovering and managing premium benefits and experiences. Built with Next.js 14, TypeScript, Tailwind CSS, and Prisma.
+This is a modern full-stack application designed to connect members with local discounts, events, and partner offers. The platform serves two main user groups: members seeking benefits and partners managing events and discounts.
 
-## ✨ Features
+## Tech Stack
 
-### 🔐 Authentication & Authorization
-- **NextAuth.js** integration with Google OAuth and email/password
-- **Role-based access control** (Member, Partner, Admin)
-- **Protected routes** with middleware
-- **Session management** with automatic role-based redirects
+- **Framework:** Next.js
+- **Styling:** Tailwind CSS with ShadCN UI
+- **ORM:** Prisma
+- **Database:** PostgreSQL (via Supabase)
+- **Authentication:** NextAuth.js
+- **Form Handling:** React Hook Form & Zod
+- **Image Uploads:** UploadThing
 
-### 🎯 User Roles
+## Getting Started
 
-#### **Members** 👥
-- Discover and browse events/benefits
-- Submit reviews and ratings
-- View event details and partner information
-- Personalized dashboard with favorites
-
-#### **Partners** 🏢
-- Create and manage events
-- View analytics and performance metrics
-- Respond to reviews and feedback
-- Event management dashboard
-
-### 🏗️ Technical Stack
-
-- **Frontend**: Next.js 14 (App Router), TypeScript, Tailwind CSS
-- **Backend**: Next.js API Routes, Prisma ORM
-- **Database**: PostgreSQL (Supabase)
-- **Authentication**: NextAuth.js
-- **State Management**: React Query (TanStack Query)
-- **UI Components**: Custom components with Framer Motion
-- **Styling**: Tailwind CSS with custom design system
-
-## 🚀 Quick Start
+Follow these instructions to get a copy of the project up and running on your local machine for development and testing purposes.
 
 ### Prerequisites
 
-- Node.js 18+ 
-- PostgreSQL database (Supabase recommended)
-- Google OAuth credentials (optional)
+- Node.js (v18 or later)
+- npm or yarn
 
-### 1. Clone and Install
+### Installation
 
-```bash
-git clone <repository-url>
-cd benefit-plus
-npm install
-```
+1.  **Clone the repository:**
+    ```sh
+    git clone https://github.com/Kavs88/benefitsplus-project.git
+    cd benefitsplus-project
+    ```
+2.  **Install dependencies:**
+    ```sh
+    npm install
+    ```
+3.  **Set up your environment variables:**
+    -   Create a new file named `.env` in the root of the project.
+    -   Copy the contents of `.env.example` into your new `.env` file.
+    -   Fill in the necessary values (like `DATABASE_URL` and `NEXTAUTH_SECRET`).
+4.  **Run database migrations:**
+    ```sh
+    npx prisma migrate dev
+    ```
+5.  **Run the development server:**
+    ```sh
+    npm run dev
+    ```
 
-### 2. Environment Setup
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-Create a `.env.local` file in the root directory:
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-```env
-# Database
-DATABASE_URL="postgresql://username:password@host:port/database"
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-# NextAuth
-NEXTAUTH_SECRET="your-secret-key-here"
-NEXTAUTH_URL="http://localhost:3000"
+## Learn More
 
-# Google OAuth (optional)
-GOOGLE_CLIENT_ID="your-google-client-id"
-GOOGLE_CLIENT_SECRET="your-google-client-secret"
-```
+To learn more about Next.js, take a look at the following resources:
 
-### 3. Database Setup
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-```bash
-# Push schema to database
-npm run db:push
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-# Seed with sample data
-npm run db:seed
-```
+## Deploy on Vercel
 
-### 4. Start Development Server
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-```bash
-npm run dev
-```
-
-Visit [http://localhost:3000](http://localhost:3000) to see the application.
-
-## 📁 Project Structure
-
-```
-benefit-plus/
-├── components/           # Reusable UI components
-├── screens/             # Page-level components
-├── src/
-│   ├── app/            # Next.js App Router
-│   │   ├── api/        # API routes
-│   │   ├── dashboard/  # Role-based dashboards
-│   │   └── globals.css # Global styles
-│   ├── components/     # UI components
-│   ├── hooks/          # Custom React hooks
-│   ├── lib/            # Utility functions
-│   └── types/          # TypeScript type definitions
-├── prisma/             # Database schema and migrations
-└── public/             # Static assets
-```
-
-## 🔧 Available Scripts
-
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run start` - Start production server
-- `npm run lint` - Run ESLint
-- `npm run db:push` - Push schema to database
-- `npm run db:seed` - Seed database with sample data
-- `npm run db:studio` - Open Prisma Studio
-
-## 🎨 Design System
-
-### Color Palette
-- **Primary**: Blue gradient (`#3B82F6` to `#8B5CF6`)
-- **Secondary**: Purple accents
-- **Background**: Light gray (`#F7F7FA`)
-- **Text**: Dark gray (`#1D1D1F`)
-
-### Typography
-- **Font**: Geist Sans (Google Fonts)
-- **Weights**: 400, 500, 600, 700
-
-### Components
-- **Cards**: Rounded corners, subtle shadows
-- **Buttons**: Gradient backgrounds, hover effects
-- **Modals**: Framer Motion animations
-- **Forms**: Clean, accessible design
-
-## 🔌 API Endpoints
-
-### Authentication
-- `POST /api/auth/register` - User registration
-- `GET/POST /api/auth/[...nextauth]` - NextAuth endpoints
-
-### Events
-- `GET /api/events` - Fetch all events
-- `POST /api/events` - Create new event (Partners only)
-- `GET /api/events/[id]` - Get specific event
-- `PUT /api/events/[id]` - Update event
-- `DELETE /api/events/[id]` - Delete event
-
-### Reviews
-- `GET /api/reviews?eventId=...` - Get reviews for event
-- `POST /api/reviews` - Submit review
-
-## 👥 Sample Users
-
-After running the seed script, you can test with these accounts:
-
-### Partners
-- **Email**: `zen@wellness.com` | **Password**: `password123`
-- **Email**: `taste@italy.com` | **Password**: `password123`
-- **Email**: `wild@lens.com` | **Password**: `password123`
-
-### Members
-- **Email**: `john@example.com` | **Password**: `password123`
-- **Email**: `sarah@example.com` | **Password**: `password123`
-
-## 🛠️ Development
-
-### Adding New Features
-
-1. **API Routes**: Add new endpoints in `src/app/api/`
-2. **Components**: Create reusable components in `src/components/`
-3. **Pages**: Add new pages in `src/app/` or `src/dashboard/`
-4. **Database**: Update schema in `prisma/schema.prisma`
-
-### Database Changes
-
-```bash
-# After modifying schema.prisma
-npm run db:push
-
-# For production migrations
-npx prisma migrate dev --name migration-name
-```
-
-### Styling Guidelines
-
-- Use Tailwind CSS utility classes
-- Follow the established color palette
-- Maintain consistent spacing and typography
-- Use Framer Motion for animations
-
-## 🚀 Deployment
-
-### Vercel (Recommended)
-
-1. Connect your GitHub repository to Vercel
-2. Add environment variables in Vercel dashboard
-3. Deploy automatically on push to main branch
-
-### Environment Variables for Production
-
-```env
-DATABASE_URL="your-production-database-url"
-NEXTAUTH_SECRET="your-production-secret"
-NEXTAUTH_URL="https://your-domain.com"
-GOOGLE_CLIENT_ID="your-google-client-id"
-GOOGLE_CLIENT_SECRET="your-google-client-secret"
-```
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## 📝 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🆘 Support
-
-If you encounter any issues or have questions:
-
-1. Check the [Issues](../../issues) page
-2. Create a new issue with detailed information
-3. Include steps to reproduce the problem
-
----
-
-Built with ❤️ using Next.js, TypeScript, and Tailwind CSS
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
