@@ -25,4 +25,28 @@ export const eventFormSchema = z.object({
   isFree: z.boolean(),
   category: z.string(),
 });
-export type EventFormValues = z.infer<typeof eventFormSchema>; 
+export type EventFormValues = z.infer<typeof eventFormSchema>;
+
+// FILE: src/types/index.ts (or types/index.ts)
+
+// ... (keep all your other exports like eventFormSchema, etc.)
+
+export const discountFormSchema = z.object({
+  title: z.string().min(3, 'Title must be at least 3 characters.'),
+  description: z.string().min(10, 'Description must be at least 10 characters long.'),
+  discountValue: z.string().min(1, 'Discount value is required.'),
+  imageUrl: z.string().url('A valid image URL is required.'),
+  startDate: z.string().refine((val) => val, { message: 'Start date is required.' }),
+  endDate: z.string().refine((val) => val, { message: 'End date is required.' }),
+  termsAndConditions: z.string().optional(),
+  category: z.string(), // Placeholder for now
+}).refine(data => {
+  // Only validate if both dates are present and valid strings
+  if (!data.startDate || !data.endDate) return true;
+  return new Date(data.endDate) >= new Date(data.startDate);
+}, {
+  message: "End date cannot be before the start date.",
+  path: ["endDate"], // This will show the error message right under the endDate field
+});
+
+export type DiscountFormValues = z.infer<typeof discountFormSchema>;
