@@ -4,7 +4,7 @@ import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { DetailedDiscount } from '@/src/types'; // Using our centralized type
-import { formatDateTime } from '@/src/lib/utils'; // Using our centralized utility
+import { formatDateTime } from '@/lib/utils'; // Using our centralized utility
 import { Button } from '@/src/components/ui/button'; // Using our standardized Button
 import { Badge } from '@/src/components/ui/badge'; // Using our standardized Badge
 import { CalendarDays, User, Tag } from 'lucide-react';
