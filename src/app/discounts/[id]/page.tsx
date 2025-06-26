@@ -3,10 +3,10 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { DetailedDiscount } from '@/src/types'; // Using our centralized type
+import { DetailedDiscount } from '@/types'; // Using our centralized type
 import { formatDateTime } from '@/lib/utils'; // Using our centralized utility
-import { Button } from '@/src/components/ui/button'; // Using our standardized Button
-import { Badge } from '@/src/components/ui/badge'; // Using our standardized Badge
+import { Button } from '@/components/ui/button'; // Using our standardized Button
+import { Badge } from '@/components/ui/badge'; // Using our standardized Badge
 import { CalendarDays, User, Tag } from 'lucide-react';
 
 // This function fetches discount details using a relative URL (works in dev and prod)

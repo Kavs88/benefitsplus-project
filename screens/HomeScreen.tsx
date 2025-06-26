@@ -162,7 +162,7 @@ export default function HomeScreen() {
           <EmptyState 
             message="Nothing here... yet! ✨" 
             buttonText="Adjust Interests"
-            onButtonPress={() => {/* Navigate to interests */}}
+            buttonLink="/interests"
           />
         </div>
       </div>
