@@ -12,7 +12,18 @@ export type DetailedEvent = Prisma.EventGetPayload<typeof eventWithDetails>;
 const discountWithDetails = Prisma.validator<Prisma.DiscountDefaultArgs>()({
   include: { partner: true, categories: true },
 });
-export type DetailedDiscount = Prisma.DiscountGetPayload<typeof discountWithDetails>;
+export type DiscountWithPartnerAndCategories = Prisma.DiscountGetPayload<typeof discountWithDetails> & {
+  partner: User;
+  categories: Category[];
+};
+
+export type DetailedDiscount = Prisma.DiscountGetPayload<typeof discountWithDetails> & {
+  partner: User;
+  categories: Category[];
+  imageUrl: string;
+  discountValue: string;
+  termsAndConditions: string;
+};
 
 export const eventFormSchema = z.object({
   title: z.string().min(3, 'Title must be at least 3 characters.'),

@@ -1,43 +1,61 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { createEvent, updateEvent } from "@/lib/actions/event.actions";
-import { eventFormSchema, EventFormValues, DetailedEvent } from "@/types";
+import { eventFormSchema, EventFormValues } from "@/types";
 import { format } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
-
 import { Button } from "@/components/ui/button";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { FileUploader } from "@/components/shared/FileUploader";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Category } from "@prisma/client";
 
 type EventFormProps = {
   userId: string;
   type: "Create" | "Update";
-  event?: DetailedEvent;
+  event?: EventFormValues & { id: string };
+  categories: Category[];
 };
 
-export function EventForm({ userId, type, event }: EventFormProps) {
+export function EventForm({
+  userId,
+  type,
+  event,
+  categories,
+}: EventFormProps) {
   const router = useRouter();
+  const [files, setFiles] = useState<File[]>([]);
 
   const initialValues =
     event && type === "Update"
-      ? {
-          ...event,
-          description: event.description || "",
-          startDateTime: new Date(event.startDateTime).toISOString(),
-          endDateTime: new Date(event.endDateTime).toISOString(),
-          category: event.categories.length > 0 ? event.categories[0].id : "",
-        }
+      ? { ...event }
       : {
           title: "",
           description: "",
@@ -55,13 +73,17 @@ export function EventForm({ userId, type, event }: EventFormProps) {
     defaultValues: initialValues,
   });
 
-  const { formState: { isSubmitting } } = form;
+  const {
+    formState: { isSubmitting },
+  } = form;
   const isFree = form.watch("isFree");
 
   async function onSubmit(values: EventFormValues) {
+    let eventData = { ...values, imageUrl: files.length > 0 ? files[0].name : values.imageUrl };
+    
     if (type === "Create") {
       try {
-        const newEvent = await createEvent({ event: values, userId });
+        const newEvent = await createEvent({ event: eventData, userId });
         if (newEvent) {
           form.reset();
           router.push(`/events/${newEvent.id}`);
@@ -78,12 +100,9 @@ export function EventForm({ userId, type, event }: EventFormProps) {
       }
 
       try {
-        // We need to make sure the payload matches what the action expects.
-        // The action expects a complete event object.
-        const eventData = { ...event, ...values };
         const updatedEvent = await updateEvent({
           userId,
-          event: eventData,
+          event: { ...eventData, id: event.id },
         });
 
         if (updatedEvent) {
@@ -118,16 +137,21 @@ export function EventForm({ userId, type, event }: EventFormProps) {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Category</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Select a category" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="Music">Music</SelectItem>
-                    <SelectItem value="Tech">Tech</SelectItem>
-                    <SelectItem value="Art">Art</SelectItem>
+                    {categories.map((category) => (
+                      <SelectItem key={category.id} value={category.id}>
+                        {category.name}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -143,13 +167,17 @@ export function EventForm({ userId, type, event }: EventFormProps) {
             <FormItem>
               <FormLabel>Description</FormLabel>
               <FormControl>
-                <Textarea placeholder="Tell us more about the event..." className="resize-none" {...field} />
+                <Textarea
+                  placeholder="Tell us more about the event..."
+                  className="resize-none"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <FormField
             control={form.control}
@@ -171,14 +199,18 @@ export function EventForm({ userId, type, event }: EventFormProps) {
               <FormItem>
                 <FormLabel>Event Image</FormLabel>
                 <FormControl>
-                  <FileUploader onFieldChange={field.onChange} imageUrl={field.value} />
+                  <FileUploader
+                    onFieldChange={field.onChange}
+                    imageUrl={field.value}
+                    setFiles={setFiles}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
         </div>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <FormField
             control={form.control}
@@ -208,8 +240,12 @@ export function EventForm({ userId, type, event }: EventFormProps) {
                   <PopoverContent className="w-auto p-0" align="start">
                     <Calendar
                       mode="single"
-                      selected={field.value ? new Date(field.value) : undefined}
-                      onSelect={(date: Date | undefined) => field.onChange(date?.toISOString())}
+                      selected={
+                        field.value ? new Date(field.value) : undefined
+                      }
+                      onSelect={(date: Date | undefined) =>
+                        field.onChange(date?.toISOString())
+                      }
                       initialFocus
                     />
                   </PopoverContent>
@@ -246,8 +282,12 @@ export function EventForm({ userId, type, event }: EventFormProps) {
                   <PopoverContent className="w-auto p-0" align="start">
                     <Calendar
                       mode="single"
-                      selected={field.value ? new Date(field.value) : undefined}
-                      onSelect={(date: Date | undefined) => field.onChange(date?.toISOString())}
+                      selected={
+                        field.value ? new Date(field.value) : undefined
+                      }
+                      onSelect={(date: Date | undefined) =>
+                        field.onChange(date?.toISOString())
+                      }
                       initialFocus
                     />
                   </PopoverContent>
@@ -258,7 +298,7 @@ export function EventForm({ userId, type, event }: EventFormProps) {
           />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-end">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <FormField
             control={form.control}
             name="price"
@@ -266,31 +306,55 @@ export function EventForm({ userId, type, event }: EventFormProps) {
               <FormItem>
                 <FormLabel>Price</FormLabel>
                 <FormControl>
-                  <Input type="number" placeholder="20.00" {...field} disabled={isFree} />
+                  <div className="flex items-center">
+                    <Input
+                      type="number"
+                      placeholder="0.00"
+                      className="input-field"
+                      {...field}
+                      disabled={isFree}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="isFree"
+                      render={({ field: isFreeField }) => (
+                        <FormItem className="ml-4">
+                          <FormControl>
+                            <div className="flex items-center">
+                              <label
+                                htmlFor="isFree"
+                                className="whitespace-nowrap pr-3 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                              >
+                                Free
+                              </label>
+                              <Checkbox
+                                onCheckedChange={isFreeField.onChange}
+                                checked={isFreeField.value}
+                                id="isFree"
+                                className="mr-2 h-5 w-5 border-2 border-primary-500"
+                              />
+                            </div>
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            name="isFree"
-            render={({ field }) => (
-              <FormItem className="flex items-center space-x-2 pb-2">
-                <FormControl>
-                  <Checkbox
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                  />
-                </FormControl>
-                <FormLabel className="!mt-0">Is this a FREE event?</FormLabel>
-              </FormItem>
-            )}
-          />
         </div>
 
-        <Button type="submit" size="lg" className="w-full" disabled={isSubmitting}>
-          {isSubmitting ? 'Submitting...' : `${type} Event`}
+        <Button
+          type="submit"
+          size="lg"
+          disabled={isSubmitting}
+          className="button col-span-2 w-full"
+        >
+          {isSubmitting
+            ? "Submitting..."
+            : `${type === "Create" ? "Create" : "Update"} Event`}
         </Button>
       </form>
     </Form>

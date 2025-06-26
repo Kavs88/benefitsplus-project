@@ -41,8 +41,23 @@ export async function getAllDiscounts() {
   }
 }
 
-export async function getDiscountById(id: string) {
-  // ... existing code ...
+export async function getDiscountById(
+  id: string
+): Promise<DiscountWithPartnerAndCategories | null> {
+  try {
+    const discount = await prisma.discount.findUnique({
+      where: { id },
+      include: {
+        partner: true,
+        categories: true,
+      },
+    });
+    if (!discount) return null;
+    return discount;
+  } catch (error) {
+    handleError(error);
+    return null;
+  }
 }
 
 export type UpdateDiscountArgs = {
