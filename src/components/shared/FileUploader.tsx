@@ -3,7 +3,7 @@
 "use client";
 
 import { UploadDropzone } from "@uploadthing/react";
-import { OurFileRouter } from "@/src/app/api/uploadthing/route";
+import { OurFileRouter } from "@/app/api/uploadthing/route";
 import Image from "next/image";
 import { X } from "lucide-react";
 
