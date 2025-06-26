@@ -24,18 +24,25 @@ export async function createDiscount({ discount, userId }: { discount: DiscountF
   }
 }
 
-export async function getAllDiscounts({ limit }: { limit: number }): Promise<DetailedDiscount[]> {
+export async function getAllDiscounts() {
   try {
     const discounts = await prisma.discount.findMany({
-      take: limit,
-      orderBy: { startDate: 'asc' },
-      include: { partner: true, categories: true },
+      include: {
+        partner: true,
+        categories: true,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
     });
-    return JSON.parse(JSON.stringify(discounts));
+    return discounts;
   } catch (error) {
-    console.error('Error fetching discounts:', error);
-    return [];
+    handleError(error);
   }
+}
+
+export async function getDiscountById(id: string) {
+  // ... existing code ...
 }
 
 export type UpdateDiscountArgs = {
@@ -93,6 +100,19 @@ export async function updateDiscount({ discount, userId }: UpdateDiscountArgs) {
     return JSON.parse(JSON.stringify(updated));
   } catch (error) {
     console.error("Failed to update discount:", error);
+    throw error;
+  }
+}
+
+export async function deleteDiscount({ discountId, path }: { discountId: string, path: string }) {
+  try {
+    const discount = await prisma.discount.findUnique({ where: { id: discountId } });
+    if (!discount) throw new Error("Discount not found");
+    await prisma.discount.delete({ where: { id: discountId } });
+    revalidatePath(path);
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to delete discount:", error);
     throw error;
   }
 } 

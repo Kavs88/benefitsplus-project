@@ -1,55 +1,37 @@
 "use client";
 
-import { useTransition } from 'react';
-import { useRouter } from 'next/navigation';
-import { deleteEvent } from '@/lib/actions/event.actions';
+import { useState } from "react";
+import { AlertDialog, AlertDialogTrigger, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogCancel, AlertDialogAction } from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
 
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
-import { Button } from '@/components/ui/button';
+interface DeleteConfirmationProps {
+  onConfirm: () => void;
+  triggerText?: string;
+  loading?: boolean;
+}
 
-export const DeleteConfirmation = ({ eventId }: { eventId: string }) => {
-  const router = useRouter();
-  let [isPending, startTransition] = useTransition();
-
-  const handleDelete = () => {
-    startTransition(async () => {
-      await deleteEvent({ eventId });
-      router.push('/events');
-    });
-  };
+export default function DeleteConfirmation({ onConfirm, triggerText = "Delete", loading }: DeleteConfirmationProps) {
+  const [open, setOpen] = useState(false);
 
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button variant="destructive">Delete Event</Button>
+        <Button variant="destructive" onClick={() => setOpen(true)}>{triggerText}</Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+          <AlertDialogTitle>Are you sure?</AlertDialogTitle>
           <AlertDialogDescription>
-            This action cannot be undone. This will permanently delete this event.
+            This action cannot be undone.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction
-            disabled={isPending}
-            onClick={handleDelete}
-          >
-            {isPending ? 'Deleting...' : 'Confirm'}
+          <AlertDialogCancel onClick={() => setOpen(false)}>Cancel</AlertDialogCancel>
+          <AlertDialogAction onClick={() => { setOpen(false); onConfirm(); }} disabled={loading}>
+            Delete
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
   );
-}; 
+} 
