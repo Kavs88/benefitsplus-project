@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
@@ -44,12 +44,7 @@ type EventFormProps = {
   categories: Category[];
 };
 
-export function EventForm({
-  userId,
-  type,
-  event,
-  categories,
-}: EventFormProps) {
+export function EventForm({ userId, type, event, categories }: EventFormProps) {
   const router = useRouter();
 
   const initialValues =
@@ -221,7 +216,7 @@ export function EventForm({
                         variant={"outline"}
                         className={cn(
                           "w-full pl-3 text-left font-normal",
-                          !field.value && "text-muted-foreground"
+                          !field.value && "text-muted-foreground",
                         )}
                       >
                         {field.value ? (
@@ -236,9 +231,7 @@ export function EventForm({
                   <PopoverContent className="w-auto p-0" align="start">
                     <Calendar
                       mode="single"
-                      selected={
-                        field.value ? new Date(field.value) : undefined
-                      }
+                      selected={field.value ? new Date(field.value) : undefined}
                       onSelect={(date: Date | undefined) =>
                         field.onChange(date?.toISOString())
                       }
@@ -263,7 +256,7 @@ export function EventForm({
                         variant={"outline"}
                         className={cn(
                           "w-full pl-3 text-left font-normal",
-                          !field.value && "text-muted-foreground"
+                          !field.value && "text-muted-foreground",
                         )}
                       >
                         {field.value ? (
@@ -278,9 +271,7 @@ export function EventForm({
                   <PopoverContent className="w-auto p-0" align="start">
                     <Calendar
                       mode="single"
-                      selected={
-                        field.value ? new Date(field.value) : undefined
-                      }
+                      selected={field.value ? new Date(field.value) : undefined}
                       onSelect={(date: Date | undefined) =>
                         field.onChange(date?.toISOString())
                       }
@@ -355,4 +346,4 @@ export function EventForm({
       </form>
     </Form>
   );
-} 
+}

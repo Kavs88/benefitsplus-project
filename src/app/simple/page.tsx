@@ -1,15 +1,15 @@
-import React from 'react';
-import { getAllEvents } from '@/lib/actions/event.actions';
-import { getAllDiscounts } from '@/lib/actions/discount.actions';
-import { DetailedEvent, DetailedDiscount } from '@/types';
-import EventCard from '@/components/shared/EventCard';
-import DiscountCard from '@/components/shared/DiscountCard';
-import EmptyState from '@/components/shared/EmptyState';
+import React from "react";
+import { getAllEvents } from "@/lib/actions/event.actions";
+import { getAllDiscounts } from "@/lib/actions/discount.actions";
+import { DetailedEvent } from "@/types";
+import EventCard from "@/components/shared/EventCard";
+import DiscountCard from "@/components/shared/DiscountCard";
+import EmptyState from "@/components/shared/EmptyState";
 
 export default async function SimpleHomePage() {
   // Fetch data using server actions
   const events = await getAllEvents({ limit: 3 });
-  const discounts = await getAllDiscounts({ limit: 3 });
+  const discounts = await getAllDiscounts();
 
   return (
     <main className="min-h-screen bg-gray-50">
@@ -19,11 +19,15 @@ export default async function SimpleHomePage() {
           <div className="text-center max-w-4xl mx-auto">
             <h1 className="text-5xl lg:text-7xl font-bold text-gray-900 mb-6 leading-tight">
               Welcome to
-              <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent"> BenefitPlus</span>
+              <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                {" "}
+                BenefitPlus
+              </span>
             </h1>
             <p className="text-xl lg:text-2xl text-gray-600 mb-10 max-w-3xl mx-auto leading-relaxed">
-              Discover exclusive events and amazing discounts curated just for you.
-              Connect with local partners and unlock incredible experiences.
+              Discover exclusive events and amazing discounts curated just for
+              you. Connect with local partners and unlock incredible
+              experiences.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <button className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-2xl text-lg font-semibold hover:from-blue-700 hover:to-purple-700 transition-all duration-200 shadow-xl hover:shadow-2xl transform hover:-translate-y-1">
@@ -45,10 +49,10 @@ export default async function SimpleHomePage() {
               Upcoming Events
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Don't miss out on these exciting events happening near you
+              Don&apos;t miss out on these exciting events happening near you
             </p>
           </div>
-          
+
           {events.length === 0 ? (
             <EmptyState
               message="No upcoming events at the moment. Check back soon for new experiences!"
@@ -76,8 +80,8 @@ export default async function SimpleHomePage() {
               Exclusive offers and deals from our trusted partners
             </p>
           </div>
-          
-          {discounts.length === 0 ? (
+
+          {!discounts || discounts.length === 0 ? (
             <EmptyState
               message="No featured discounts available right now. New offers coming soon!"
               buttonText="View All Discounts"
@@ -85,7 +89,7 @@ export default async function SimpleHomePage() {
             />
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-              {discounts.map((discount: DetailedDiscount) => (
+              {discounts.map((discount) => (
                 <DiscountCard key={discount.id} discount={discount} />
               ))}
             </div>
@@ -94,4 +98,4 @@ export default async function SimpleHomePage() {
       </section>
     </main>
   );
-} 
+}

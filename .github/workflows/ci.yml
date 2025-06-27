@@ -2,9 +2,9 @@ name: BenefitPlus CI
 
 on:
   push:
-    branches: [ "master" ]
+    branches: ["master"]
   pull_request:
-    branches: [ "master" ]
+    branches: ["master"]
 
 jobs:
   build-and-lint:
@@ -17,8 +17,8 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18' # or your preferred node version
-          cache: 'npm'
+          node-version: "18" # or your preferred node version
+          cache: "npm"
 
       - name: Install dependencies
         run: npm install
@@ -27,4 +27,4 @@ jobs:
         run: npm run lint
 
       - name: Check build
-        run: npm run build 
+        run: npm run build

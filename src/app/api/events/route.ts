@@ -38,12 +38,12 @@ export async function GET() {
         },
       },
       orderBy: {
-        createdAt: 'desc',
+        createdAt: "desc",
       },
     });
 
     // Transform data to match frontend expectations
-    const transformedEvents = events.map(event => ({
+    const transformedEvents = events.map((event) => ({
       id: event.id,
       title: event.title,
       description: event.description,
@@ -51,25 +51,27 @@ export async function GET() {
       location: event.location,
       city: event.city,
       image: event.image,
-      category: 'Wellness', // You might want to add a category field to your schema
+      category: "Wellness", // You might want to add a category field to your schema
       partner: {
         id: event.partner.id,
-        name: event.partner.name || 'Unknown Partner',
+        name: event.partner.name || "Unknown Partner",
         image: event.partner.image,
       },
       reviews: event.reviews,
       reviewCount: event._count.reviews,
-      averageRating: event.reviews.length > 0 
-        ? event.reviews.reduce((acc, review) => acc + review.rating, 0) / event.reviews.length
-        : 0,
+      averageRating:
+        event.reviews.length > 0
+          ? event.reviews.reduce((acc, review) => acc + review.rating, 0) /
+            event.reviews.length
+          : 0,
     }));
 
     return NextResponse.json(transformedEvents);
   } catch (error) {
-    console.error('Error fetching events:', error);
+    console.error("Error fetching events:", error);
     return NextResponse.json(
-      { error: 'Failed to fetch events' },
-      { status: 500 }
+      { error: "Failed to fetch events" },
+      { status: 500 },
     );
   }
 }
@@ -77,26 +79,27 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
-    
+
     if (!session) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { title, description, date, location, city, image } = await request.json();
+    const { title, description, date, location, city, image } =
+      await request.json();
 
     // Validate required fields
     if (!title || !date || !location || !city) {
       return NextResponse.json(
-        { error: 'Title, date, location, and city are required' },
-        { status: 400 }
+        { error: "Title, date, location, and city are required" },
+        { status: 400 },
       );
     }
 
     // Check if user is a partner
-    if (session.user.role !== 'partner') {
+    if (session.user.role !== "partner") {
       return NextResponse.json(
-        { error: 'Only partners can create events' },
-        { status: 403 }
+        { error: "Only partners can create events" },
+        { status: 403 },
       );
     }
 
@@ -124,10 +127,10 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(event, { status: 201 });
   } catch (error) {
-    console.error('Error creating event:', error);
+    console.error("Error creating event:", error);
     return NextResponse.json(
-      { error: 'Failed to create event' },
-      { status: 500 }
+      { error: "Failed to create event" },
+      { status: 500 },
     );
   }
-} 
+}

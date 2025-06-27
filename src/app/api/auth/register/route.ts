@@ -6,13 +6,19 @@ const prisma = new PrismaClient();
 
 export async function POST(request: NextRequest) {
   try {
-    const { name, email, password, role = "member", location } = await request.json();
+    const {
+      name,
+      email,
+      password,
+      role = "member",
+      location,
+    } = await request.json();
 
     // Validate required fields
     if (!name || !email || !password) {
       return NextResponse.json(
         { error: "Name, email, and password are required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -24,7 +30,7 @@ export async function POST(request: NextRequest) {
     if (existingUser) {
       return NextResponse.json(
         { error: "User with this email already exists" },
-        { status: 409 }
+        { status: 409 },
       );
     }
 
@@ -51,17 +57,17 @@ export async function POST(request: NextRequest) {
     });
 
     return NextResponse.json(
-      { 
+      {
         message: "User created successfully",
-        user 
+        user,
       },
-      { status: 201 }
+      { status: 201 },
     );
   } catch {
     console.error("Registration error");
     return NextResponse.json(
       { error: "Failed to create user" },
-      { status: 500 }
+      { status: 500 },
     );
   }
-} 
+}

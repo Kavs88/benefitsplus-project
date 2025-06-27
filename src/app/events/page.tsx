@@ -1,8 +1,8 @@
 // FINAL CODE FOR: src/app/events/page.tsx
 
-import React from 'react';
-import { getAllEvents } from '@/lib/actions/event.actions';
-import { DetailedEvent } from '@/types';
+import React from "react";
+import { getAllEvents } from "@/lib/actions/event.actions";
+import { DetailedEvent } from "@/types";
 import EmptyState from "@/components/shared/EmptyState";
 import EventCard from "@/components/shared/EventCard";
 

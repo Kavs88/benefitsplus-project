@@ -1,119 +1,124 @@
-import React from 'react';
-import { 
-  Heart, 
-  Calendar, 
-  MapPin, 
-  Users, 
-  Star, 
+import React from "react";
+import {
+  Calendar,
+  MapPin,
   Clock,
   Tag,
   ArrowRight,
   Bookmark,
-  TrendingUp
-} from 'lucide-react';
-import { Card } from "@/components/ui/card";
+  TrendingUp,
+} from "lucide-react";
+import Image from "next/image";
 
 // Mock user data
 const mockUser = {
-  name: 'Sarah Chen',
-  location: 'San Francisco, CA',
-  avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face'
+  name: "Sarah Chen",
+  location: "San Francisco, CA",
+  avatar:
+    "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face",
 };
 
 // Mock saved events
 const savedEvents = [
   {
-    id: '1',
-    title: 'Mindful Mountain Retreat',
-    date: '2024-03-15',
-    location: 'Aspen, Colorado',
-    image: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400&h=300&fit=crop',
-    price: '$299',
-    originalPrice: '$499'
+    id: "1",
+    title: "Mindful Mountain Retreat",
+    date: "2024-03-15",
+    location: "Aspen, Colorado",
+    image:
+      "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400&h=300&fit=crop",
+    price: "$299",
+    originalPrice: "$499",
   },
   {
-    id: '2',
-    title: 'Artisan Coffee Workshop',
-    date: '2024-03-20',
-    location: 'Portland, Oregon',
-    image: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=300&fit=crop',
-    price: '$89',
-    originalPrice: '$119'
-  }
+    id: "2",
+    title: "Artisan Coffee Workshop",
+    date: "2024-03-20",
+    location: "Portland, Oregon",
+    image:
+      "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=300&fit=crop",
+    price: "$89",
+    originalPrice: "$119",
+  },
 ];
 
 // Mock saved discounts
 const savedDiscounts = [
   {
-    id: '1',
-    title: '50% Off Yoga Classes',
-    businessName: 'Zen Wellness Studio',
-    location: 'San Francisco, CA',
-    image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=300&fit=crop',
-    originalPrice: '$120',
-    discountedPrice: '$60',
-    expiration: '2024-04-15'
+    id: "1",
+    title: "50% Off Yoga Classes",
+    businessName: "Zen Wellness Studio",
+    location: "San Francisco, CA",
+    image:
+      "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=300&fit=crop",
+    originalPrice: "$120",
+    discountedPrice: "$60",
+    expiration: "2024-04-15",
   },
   {
-    id: '2',
-    title: 'Free Coffee with Pastry',
-    businessName: 'Artisan Coffee Co.',
-    location: 'Portland, OR',
-    image: 'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=400&h=300&fit=crop',
-    originalPrice: '$12',
-    discountedPrice: '$6',
-    expiration: '2024-03-30'
-  }
+    id: "2",
+    title: "Free Coffee with Pastry",
+    businessName: "Artisan Coffee Co.",
+    location: "Portland, OR",
+    image:
+      "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=400&h=300&fit=crop",
+    originalPrice: "$12",
+    discountedPrice: "$6",
+    expiration: "2024-03-30",
+  },
 ];
 
 // Mock suggested content
 const suggestedContent = [
   {
-    id: '1',
-    title: 'Sunset Photography Adventure',
-    type: 'event',
-    location: 'San Francisco, CA',
-    image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop',
-    price: '$149',
-    originalPrice: '$199',
-    reason: 'Based on your location'
+    id: "1",
+    title: "Sunset Photography Adventure",
+    type: "event",
+    location: "San Francisco, CA",
+    image:
+      "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop",
+    price: "$149",
+    originalPrice: "$199",
+    reason: "Based on your location",
   },
   {
-    id: '2',
-    title: '30% Off Massage Therapy',
-    type: 'discount',
-    businessName: 'Serenity Spa',
-    location: 'San Francisco, CA',
-    image: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400&h=300&fit=crop',
-    originalPrice: '$100',
-    discountedPrice: '$70',
-    reason: 'Similar to saved wellness items'
+    id: "2",
+    title: "30% Off Massage Therapy",
+    type: "discount",
+    businessName: "Serenity Spa",
+    location: "San Francisco, CA",
+    image:
+      "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400&h=300&fit=crop",
+    originalPrice: "$100",
+    discountedPrice: "$70",
+    reason: "Similar to saved wellness items",
   },
   {
-    id: '3',
-    title: 'Cooking Class: Asian Fusion',
-    type: 'event',
-    location: 'San Francisco, CA',
-    image: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=300&fit=crop',
-    price: '$89',
-    originalPrice: '$129',
-    reason: 'Popular in your area'
-  }
+    id: "3",
+    title: "Cooking Class: Asian Fusion",
+    type: "event",
+    location: "San Francisco, CA",
+    image:
+      "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=300&fit=crop",
+    price: "$89",
+    originalPrice: "$129",
+    reason: "Popular in your area",
+  },
 ];
 
 function Placeholder({ message }: { message: string }) {
-  return (
-    <div className="text-center py-8 text-gray-500">{message}</div>
-  );
+  return <div className="text-center py-8 text-gray-500">{message}</div>;
 }
 
 function WelcomeSection() {
   return (
     <div className="bg-gradient-to-r from-emerald-600 to-teal-600 rounded-2xl p-8 text-white mb-8">
       <div className="flex items-center space-x-4 mb-6">
-        <img 
-          src={mockUser.avatar} 
+        <Image
+          src={mockUser.avatar}
           alt={mockUser.name}
+          width={64}
+          height={64}
           className="w-16 h-16 rounded-full object-cover border-2 border-white/20"
         />
         <div>
@@ -124,7 +129,7 @@ function WelcomeSection() {
           </p>
         </div>
       </div>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4">
           <div className="flex items-center space-x-3">
@@ -168,15 +173,20 @@ function SavedEventsSection() {
           <ArrowRight className="w-4 h-4" />
         </button>
       </div>
-      
+
       {savedEvents.length > 0 ? (
         <div className="grid gap-6 md:grid-cols-2">
           {savedEvents.map((event) => (
-            <div key={event.id} className="group bg-gray-50 rounded-xl p-6 hover:bg-gray-100 transition-colors">
+            <div
+              key={event.id}
+              className="group bg-gray-50 rounded-xl p-6 hover:bg-gray-100 transition-colors"
+            >
               <div className="flex space-x-4">
-                <img 
-                  src={event.image} 
+                <Image
+                  src={event.image}
                   alt={event.title}
+                  width={80}
+                  height={80}
                   className="w-20 h-20 rounded-lg object-cover"
                 />
                 <div className="flex-1">
@@ -195,8 +205,12 @@ function SavedEventsSection() {
                   </div>
                   <div className="flex items-center justify-between mt-3">
                     <div>
-                      <p className="text-sm text-gray-500 line-through">{event.originalPrice}</p>
-                      <p className="font-semibold text-gray-900">{event.price}</p>
+                      <p className="text-sm text-gray-500 line-through">
+                        {event.originalPrice}
+                      </p>
+                      <p className="font-semibold text-gray-900">
+                        {event.price}
+                      </p>
                     </div>
                     <button className="bg-emerald-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-emerald-700 transition-colors">
                       View Details
@@ -224,22 +238,29 @@ function SavedDiscountsSection() {
           <ArrowRight className="w-4 h-4" />
         </button>
       </div>
-      
+
       {savedDiscounts.length > 0 ? (
         <div className="grid gap-6 md:grid-cols-2">
           {savedDiscounts.map((discount) => (
-            <div key={discount.id} className="group bg-gray-50 rounded-xl p-6 hover:bg-gray-100 transition-colors">
+            <div
+              key={discount.id}
+              className="group bg-gray-50 rounded-xl p-6 hover:bg-gray-100 transition-colors"
+            >
               <div className="flex space-x-4">
-                <img 
-                  src={discount.image} 
+                <Image
+                  src={discount.image}
                   alt={discount.title}
+                  width={80}
+                  height={80}
                   className="w-20 h-20 rounded-lg object-cover"
                 />
                 <div className="flex-1">
                   <h3 className="font-semibold text-gray-900 mb-2 group-hover:text-emerald-600 transition-colors">
                     {discount.title}
                   </h3>
-                  <p className="text-sm text-gray-600 mb-2">{discount.businessName}</p>
+                  <p className="text-sm text-gray-600 mb-2">
+                    {discount.businessName}
+                  </p>
                   <div className="space-y-1 text-sm text-gray-600">
                     <div className="flex items-center space-x-2">
                       <MapPin className="w-4 h-4" />
@@ -252,8 +273,12 @@ function SavedDiscountsSection() {
                   </div>
                   <div className="flex items-center justify-between mt-3">
                     <div>
-                      <p className="text-sm text-gray-500 line-through">{discount.originalPrice}</p>
-                      <p className="font-semibold text-gray-900">{discount.discountedPrice}</p>
+                      <p className="text-sm text-gray-500 line-through">
+                        {discount.originalPrice}
+                      </p>
+                      <p className="font-semibold text-gray-900">
+                        {discount.discountedPrice}
+                      </p>
                     </div>
                     <button className="bg-emerald-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-emerald-700 transition-colors">
                       Claim Now
@@ -281,19 +306,24 @@ function SuggestedSection() {
           <ArrowRight className="w-4 h-4" />
         </button>
       </div>
-      
+
       <div className="grid gap-6 md:grid-cols-3">
         {suggestedContent.map((item) => (
-          <div key={item.id} className="group bg-gray-50 rounded-xl overflow-hidden hover:bg-gray-100 transition-colors">
+          <div
+            key={item.id}
+            className="group bg-gray-50 rounded-xl overflow-hidden hover:bg-gray-100 transition-colors"
+          >
             <div className="relative">
-              <img 
-                src={item.image} 
+              <Image
+                src={item.image}
                 alt={item.title}
+                width={128}
+                height={128}
                 className="w-full h-32 object-cover group-hover:scale-105 transition-transform duration-300"
               />
               <div className="absolute top-2 left-2">
                 <div className="bg-emerald-600 text-white px-2 py-1 rounded-full text-xs font-semibold">
-                  {item.type === 'event' ? 'Event' : 'Discount'}
+                  {item.type === "event" ? "Event" : "Discount"}
                 </div>
               </div>
             </div>
@@ -302,25 +332,33 @@ function SuggestedSection() {
                 {item.title}
               </h3>
               <p className="text-sm text-gray-600 mb-2">
-                {item.type === 'event' ? item.location : item.businessName}
+                {item.type === "event" ? item.location : item.businessName}
               </p>
               <p className="text-xs text-emerald-600 mb-3">{item.reason}</p>
               <div className="flex items-center justify-between">
                 <div>
-                  {item.type === 'event' ? (
+                  {item.type === "event" ? (
                     <>
-                      <p className="text-sm text-gray-500 line-through">{item.originalPrice}</p>
-                      <p className="font-semibold text-gray-900">{item.price}</p>
+                      <p className="text-sm text-gray-500 line-through">
+                        {item.originalPrice}
+                      </p>
+                      <p className="font-semibold text-gray-900">
+                        {item.price}
+                      </p>
                     </>
                   ) : (
                     <>
-                      <p className="text-sm text-gray-500 line-through">{item.originalPrice}</p>
-                      <p className="font-semibold text-gray-900">{item.discountedPrice}</p>
+                      <p className="text-sm text-gray-500 line-through">
+                        {item.originalPrice}
+                      </p>
+                      <p className="font-semibold text-gray-900">
+                        {item.discountedPrice}
+                      </p>
                     </>
                   )}
                 </div>
                 <button className="bg-emerald-600 text-white px-3 py-1.5 rounded-lg text-sm font-semibold hover:bg-emerald-700 transition-colors">
-                  {item.type === 'event' ? 'View' : 'Claim'}
+                  {item.type === "event" ? "View" : "Claim"}
                 </button>
               </div>
             </div>
@@ -342,4 +380,4 @@ export default function MemberDashboard() {
       </div>
     </div>
   );
-} 
+}

@@ -11,7 +11,8 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "BenefitPlus - Local Discounts & Events",
-  description: "Connecting members with local discounts, events, and partner offers.",
+  description:
+    "Connecting members with local discounts, events, and partner offers.",
 };
 
 export default function RootLayout({
@@ -23,7 +24,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <Providers>
-          <Header /> 
+          <Header />
           <main>{children}</main>
           <Toaster />
         </Providers>

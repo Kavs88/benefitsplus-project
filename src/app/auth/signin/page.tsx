@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import Providers from "@/components/Providers";
 import SignInModal from "@/components/ui/auth/SignInModal";
 import { useState } from "react";
@@ -18,4 +18,4 @@ export default function SignInPage() {
       </div>
     </Providers>
   );
-} 
+}

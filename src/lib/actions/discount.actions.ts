@@ -1,26 +1,35 @@
 "use server";
 
-import { revalidatePath } from 'next/cache';
-import { prisma } from '@/lib/db';
-import { DiscountFormValues } from '@/types';
-import { DetailedDiscount } from '@/types';
+import { revalidatePath } from "next/cache";
+import { prisma } from "@/lib/db";
+import { DiscountFormValues } from "@/types";
 
-export async function createDiscount({ discount, userId }: { discount: DiscountFormValues, userId: string }) {
+export async function createDiscount({
+  discount,
+  userId,
+}: {
+  discount: DiscountFormValues;
+  userId: string;
+}) {
   try {
     const newDiscount = await prisma.discount.create({
       data: {
-        ...discount,
+        title: discount.title,
+        description: discount.description,
+        offer: discount.discountValue,
+        image: discount.imageUrl,
         startDate: new Date(discount.startDate),
         endDate: new Date(discount.endDate),
+        terms: discount.termsAndConditions,
         partner: { connect: { id: userId } },
         // Category connection will be handled separately
       },
     });
-    revalidatePath('/discounts');
+    revalidatePath("/discounts");
     return JSON.parse(JSON.stringify(newDiscount));
   } catch (error) {
-    console.error('Error creating discount:', error);
-    throw new Error('Failed to create discount.');
+    console.error("Error creating discount:", error);
+    throw new Error("Failed to create discount.");
   }
 }
 
@@ -32,18 +41,26 @@ export async function getAllDiscounts() {
         categories: true,
       },
       orderBy: {
-        createdAt: 'desc',
+        createdAt: "desc",
       },
     });
-    return discounts;
+
+    // Transform the data to match DetailedDiscount type
+    const transformedDiscounts = discounts.map((discount) => ({
+      ...discount,
+      imageUrl: discount.image || "",
+      discountValue: discount.offer || "",
+      termsAndConditions: discount.terms || "",
+    }));
+
+    return transformedDiscounts;
   } catch (error) {
-    handleError(error);
+    console.error("Error fetching discounts:", error);
+    return [];
   }
 }
 
-export async function getDiscountById(
-  id: string
-): Promise<DiscountWithPartnerAndCategories | null> {
+export async function getDiscountById(id: string): Promise<unknown | null> {
   try {
     const discount = await prisma.discount.findUnique({
       where: { id },
@@ -55,7 +72,7 @@ export async function getDiscountById(
     if (!discount) return null;
     return discount;
   } catch (error) {
-    handleError(error);
+    console.error("Error fetching discount:", error);
     return null;
   }
 }
@@ -70,7 +87,6 @@ export type UpdateDiscountArgs = {
     startDate: string;
     endDate: string;
     termsAndConditions: string;
-    category: string;
     // Add any other fields as needed
   };
   userId: string;
@@ -97,12 +113,11 @@ export async function updateDiscount({ discount, userId }: UpdateDiscountArgs) {
       data: {
         title: discount.title,
         description: discount.description,
-        discountValue: discount.discountValue,
-        imageUrl: discount.imageUrl,
+        offer: discount.discountValue,
+        image: discount.imageUrl,
         startDate: discount.startDate,
         endDate: discount.endDate,
-        termsAndConditions: discount.termsAndConditions,
-        category: discount.category,
+        terms: discount.termsAndConditions,
         // Add any other fields as needed
       },
     });
@@ -119,9 +134,17 @@ export async function updateDiscount({ discount, userId }: UpdateDiscountArgs) {
   }
 }
 
-export async function deleteDiscount({ discountId, path }: { discountId: string, path: string }) {
+export async function deleteDiscount({
+  discountId,
+  path,
+}: {
+  discountId: string;
+  path: string;
+}) {
   try {
-    const discount = await prisma.discount.findUnique({ where: { id: discountId } });
+    const discount = await prisma.discount.findUnique({
+      where: { id: discountId },
+    });
     if (!discount) throw new Error("Discount not found");
     await prisma.discount.delete({ where: { id: discountId } });
     revalidatePath(path);
@@ -130,4 +153,4 @@ export async function deleteDiscount({ discountId, path }: { discountId: string,
     console.error("Failed to delete discount:", error);
     throw error;
   }
-} 
+}

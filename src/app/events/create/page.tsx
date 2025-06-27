@@ -22,7 +22,9 @@ export default async function CreateEventPage() {
   return (
     <>
       <section className="bg-primary-50 bg-dotted-pattern bg-cover bg-center py-5 md:py-10">
-        <h1 className="wrapper h1-bold text-center sm:text-left">Create Event</h1>
+        <h1 className="wrapper h1-bold text-center sm:text-left">
+          Create Event
+        </h1>
       </section>
       <div className="wrapper my-8">
         <EventForm userId={userId} type="Create" categories={categories} />

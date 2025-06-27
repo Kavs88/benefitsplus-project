@@ -1,6 +1,7 @@
-'use client';
+"use client";
 
-import React from 'react';
+import React from "react";
+import Link from "next/link";
 
 export default function TestPage() {
   return (
@@ -9,13 +10,16 @@ export default function TestPage() {
         <h1 className="text-4xl font-bold text-gray-900 mb-8 text-center">
           BenefitPlus Test Page
         </h1>
-        
+
         <div className="bg-white rounded-2xl shadow-lg p-8 mb-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Basic Components Test</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">
+            Basic Components Test
+          </h2>
           <p className="text-gray-600 mb-4">
-            This page tests if the basic styling and components are working correctly.
+            This page tests if the basic styling and components are working
+            correctly.
           </p>
-          
+
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             <div className="bg-blue-50 p-4 rounded-lg">
               <h3 className="font-semibold text-blue-900">Card 1</h3>
@@ -31,16 +35,16 @@ export default function TestPage() {
             </div>
           </div>
         </div>
-        
+
         <div className="text-center">
-          <a 
-            href="/" 
-            className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-3 rounded-lg font-semibold hover:from-blue-700 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl"
+          <Link
+            href="/"
+            className="text-blue-600 hover:text-blue-800 underline"
           >
-            Back to Home
-          </a>
+            Go back to home
+          </Link>
         </div>
       </div>
     </div>
   );
-} 
+}

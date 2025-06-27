@@ -11,7 +11,9 @@ type UpdateEventPageProps = {
   };
 };
 
-export default async function UpdateEventPage({ params }: UpdateEventPageProps) {
+export default async function UpdateEventPage({
+  params,
+}: UpdateEventPageProps) {
   const session = await getServerSession(authOptions);
   const userId = session?.user?.id;
   const categories = await getAllCategories();
@@ -25,7 +27,11 @@ export default async function UpdateEventPage({ params }: UpdateEventPageProps) 
   const event: DetailedEvent = await getEventById(params.id);
 
   if (event.partnerId !== userId) {
-    return <div className="text-center">Access Denied: You are not the organizer of this event.</div>;
+    return (
+      <div className="text-center">
+        Access Denied: You are not the organizer of this event.
+      </div>
+    );
   }
 
   // Transform DetailedEvent to match EventForm expected format
@@ -45,7 +51,9 @@ export default async function UpdateEventPage({ params }: UpdateEventPageProps) 
   return (
     <>
       <section className="bg-primary-50 bg-dotted-pattern bg-cover bg-center py-5 md:py-10">
-        <h1 className="wrapper h1-bold text-center sm:text-left">Update Event</h1>
+        <h1 className="wrapper h1-bold text-center sm:text-left">
+          Update Event
+        </h1>
       </section>
       <div className="wrapper my-8">
         <EventForm
@@ -57,4 +65,4 @@ export default async function UpdateEventPage({ params }: UpdateEventPageProps) 
       </div>
     </>
   );
-} 
+}

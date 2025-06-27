@@ -33,9 +33,9 @@ Follow these instructions to get a copy of the project up and running on your lo
     npm install
     ```
 3.  **Set up your environment variables:**
-    -   Create a new file named `.env` in the root of the project.
-    -   Copy the contents of `.env.example` into your new `.env` file.
-    -   Fill in the necessary values (like `DATABASE_URL` and `NEXTAUTH_SECRET`).
+    - Create a new file named `.env` in the root of the project.
+    - Copy the contents of `.env.example` into your new `.env` file.
+    - Fill in the necessary values (like `DATABASE_URL` and `NEXTAUTH_SECRET`).
 4.  **Run database migrations:**
     ```sh
     npx prisma migrate dev

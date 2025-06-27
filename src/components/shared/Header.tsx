@@ -1,23 +1,23 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { useAuthModal } from '../../hooks/useAuthModal';
-import { useSession } from 'next-auth/react';
+import React from "react";
+import { useAuthModal } from "../../hooks/useAuthModal";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
-import SignInModal from '../ui/auth/SignInModal';
-import RegisterModal from '../ui/auth/RegisterModal';
-import { Button } from '../ui/button';
+import SignInModal from "../ui/auth/SignInModal";
+import RegisterModal from "../ui/auth/RegisterModal";
+import { Button } from "../ui/button";
 
 export default function Header() {
-  const { 
-    isSignInOpen, 
-    isRegisterOpen, 
-    openSignIn, 
-    openRegister, 
-    closeModals, 
-    switchToSignIn, 
+  const {
+    isSignInOpen,
+    isRegisterOpen,
+    openSignIn,
+    openRegister,
+    closeModals,
+    switchToSignIn,
     switchToRegister,
-    handleSignOut 
+    handleSignOut,
   } = useAuthModal();
   const { data: session, status } = useSession();
 
@@ -36,30 +36,54 @@ export default function Header() {
 
             {/* Navigation */}
             <nav className="hidden md:flex items-center gap-6">
-              <Link href="/" className="font-semibold text-gray-600 hover:text-blue-600 transition-colors">Home</Link>
-              <Link href="/events" className="font-semibold text-gray-600 hover:text-blue-600 transition-colors">Events</Link>
-              <Link href="/discounts" className="font-semibold text-gray-600 hover:text-blue-600 transition-colors">Discounts</Link>
+              <Link
+                href="/"
+                className="font-semibold text-gray-600 hover:text-blue-600 transition-colors"
+              >
+                Home
+              </Link>
+              <Link
+                href="/events"
+                className="font-semibold text-gray-600 hover:text-blue-600 transition-colors"
+              >
+                Events
+              </Link>
+              <Link
+                href="/discounts"
+                className="font-semibold text-gray-600 hover:text-blue-600 transition-colors"
+              >
+                Discounts
+              </Link>
             </nav>
 
             {/* Auth Buttons / User Profile */}
             <div className="flex items-center">
-              {status === 'loading' ? (
+              {status === "loading" ? (
                 <div className="animate-pulse bg-gray-200 h-10 w-36 rounded-lg"></div>
               ) : session?.user ? (
                 <div className="flex items-center space-x-4">
                   {/* Create Event Button as Link */}
                   <Button asChild>
-                    <Link href="/events/create" className="font-semibold text-gray-700 hover:text-blue-600 transition-colors px-3 py-2 text-sm">
+                    <Link
+                      href="/events/create"
+                      className="font-semibold text-gray-700 hover:text-blue-600 transition-colors px-3 py-2 text-sm"
+                    >
                       Create Event
                     </Link>
                   </Button>
                   {/* Create Discount Button as Link */}
                   <Button asChild>
-                    <Link href="/discounts/create" className="font-semibold text-gray-700 hover:text-blue-600 transition-colors px-3 py-2 text-sm">
+                    <Link
+                      href="/discounts/create"
+                      className="font-semibold text-gray-700 hover:text-blue-600 transition-colors px-3 py-2 text-sm"
+                    >
                       Create Discount
                     </Link>
                   </Button>
-                  <Link href="/dashboard/my-events" className="font-semibold text-gray-700 hover:text-blue-600 transition-colors px-3 py-2 text-sm">
+                  <Link
+                    href="/dashboard/my-events"
+                    className="font-semibold text-gray-700 hover:text-blue-600 transition-colors px-3 py-2 text-sm"
+                  >
                     My Events
                   </Link>
                   <button
@@ -107,4 +131,4 @@ export default function Header() {
       )}
     </>
   );
-} 
+}

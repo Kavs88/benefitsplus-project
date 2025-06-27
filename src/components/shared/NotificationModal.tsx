@@ -1,39 +1,69 @@
-import React from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface NotificationModalProps {
   isVisible: boolean;
   onClose: () => void;
   title: string;
   message: string;
-  type?: 'success' | 'error' | 'info';
+  type?: "success" | "error" | "info";
 }
 
-export default function NotificationModal({ 
-  isVisible, 
-  onClose, 
-  title, 
-  message, 
-  type = 'info' 
+export default function NotificationModal({
+  isVisible,
+  onClose,
+  title,
+  message,
+  type = "info",
 }: NotificationModalProps) {
   const getIcon = () => {
     switch (type) {
-      case 'success':
+      case "success":
         return (
-          <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+          <svg
+            className="w-6 h-6 text-green-600"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M5 13l4 4L19 7"
+            />
           </svg>
         );
-      case 'error':
+      case "error":
         return (
-          <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          <svg
+            className="w-6 h-6 text-red-600"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M6 18L18 6M6 6l12 12"
+            />
           </svg>
         );
       default:
         return (
-          <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          <svg
+            className="w-6 h-6 text-blue-600"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
           </svg>
         );
     }
@@ -57,11 +87,11 @@ export default function NotificationModal({
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-start space-x-3">
-              <div className="flex-shrink-0">
-                {getIcon()}
-              </div>
+              <div className="flex-shrink-0">{getIcon()}</div>
               <div className="flex-1">
-                <h3 className="text-lg font-medium text-gray-900 mb-1">{title}</h3>
+                <h3 className="text-lg font-medium text-gray-900 mb-1">
+                  {title}
+                </h3>
                 <p className="text-gray-600">{message}</p>
               </div>
             </div>
@@ -78,4 +108,4 @@ export default function NotificationModal({
       )}
     </AnimatePresence>
   );
-} 
+}

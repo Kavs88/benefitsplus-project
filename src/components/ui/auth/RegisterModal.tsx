@@ -1,7 +1,7 @@
 "use client";
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { motion } from 'framer-motion';
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
 
 interface RegisterModalProps {
   isOpen: boolean;
@@ -9,20 +9,26 @@ interface RegisterModalProps {
   onSwitchToSignIn: () => void;
 }
 
-export default function RegisterModal({ isOpen, onClose, onSwitchToSignIn }: RegisterModalProps) {
+export default function RegisterModal({
+  isOpen,
+  onClose,
+  onSwitchToSignIn,
+}: RegisterModalProps) {
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-    role: 'member' as 'member' | 'partner',
-    location: '',
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    role: "member" as "member" | "partner",
+    location: "",
   });
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const router = useRouter();
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
@@ -32,26 +38,26 @@ export default function RegisterModal({ isOpen, onClose, onSwitchToSignIn }: Reg
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    setError('');
+    setError("");
 
     // Validation
     if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match');
+      setError("Passwords do not match");
       setIsLoading(false);
       return;
     }
 
     if (formData.password.length < 6) {
-      setError('Password must be at least 6 characters long');
+      setError("Password must be at least 6 characters long");
       setIsLoading(false);
       return;
     }
 
     try {
-      const response = await fetch('/api/auth/register', {
-        method: 'POST',
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           name: formData.name,
@@ -65,18 +71,18 @@ export default function RegisterModal({ isOpen, onClose, onSwitchToSignIn }: Reg
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Registration failed');
+        throw new Error(data.error || "Registration failed");
       }
 
       // Registration successful, redirect to appropriate dashboard
-      if (formData.role === 'partner') {
-        router.push('/dashboard/partner');
+      if (formData.role === "partner") {
+        router.push("/dashboard/partner");
       } else {
-        router.push('/dashboard/member');
+        router.push("/dashboard/member");
       }
       onClose();
     } catch (error) {
-      setError(error instanceof Error ? error.message : 'Registration failed');
+      setError(error instanceof Error ? error.message : "Registration failed");
     } finally {
       setIsLoading(false);
     }
@@ -93,13 +99,18 @@ export default function RegisterModal({ isOpen, onClose, onSwitchToSignIn }: Reg
         className="bg-white rounded-2xl p-6 w-full max-w-md max-h-[90vh] overflow-y-auto"
       >
         <div className="text-center mb-6">
-          <h2 className="text-2xl font-bold text-gray-900">Create your account</h2>
+          <h2 className="text-2xl font-bold text-gray-900">
+            Create your account
+          </h2>
           <p className="text-gray-600 mt-2">Join BenefitPlus today</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="name"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               Full Name
             </label>
             <input
@@ -115,7 +126,10 @@ export default function RegisterModal({ isOpen, onClose, onSwitchToSignIn }: Reg
           </div>
 
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               Email
             </label>
             <input
@@ -131,7 +145,10 @@ export default function RegisterModal({ isOpen, onClose, onSwitchToSignIn }: Reg
           </div>
 
           <div>
-            <label htmlFor="role" className="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="role"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               I am a...
             </label>
             <select
@@ -148,7 +165,10 @@ export default function RegisterModal({ isOpen, onClose, onSwitchToSignIn }: Reg
           </div>
 
           <div>
-            <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="location"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               Location
             </label>
             <input
@@ -163,7 +183,10 @@ export default function RegisterModal({ isOpen, onClose, onSwitchToSignIn }: Reg
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               Password
             </label>
             <input
@@ -179,7 +202,10 @@ export default function RegisterModal({ isOpen, onClose, onSwitchToSignIn }: Reg
           </div>
 
           <div>
-            <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="confirmPassword"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               Confirm Password
             </label>
             <input
@@ -205,13 +231,13 @@ export default function RegisterModal({ isOpen, onClose, onSwitchToSignIn }: Reg
             disabled={isLoading}
             className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-2 px-4 rounded-lg font-medium hover:from-blue-700 hover:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
           >
-            {isLoading ? 'Creating account...' : 'Create Account'}
+            {isLoading ? "Creating account..." : "Create Account"}
           </button>
         </form>
 
         <div className="mt-6 text-center">
           <p className="text-gray-600">
-            Already have an account?{' '}
+            Already have an account?{" "}
             <button
               onClick={onSwitchToSignIn}
               className="text-blue-600 hover:text-blue-700 font-medium"
@@ -225,11 +251,21 @@ export default function RegisterModal({ isOpen, onClose, onSwitchToSignIn }: Reg
           onClick={onClose}
           className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
         >
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          <svg
+            className="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M6 18L18 6M6 6l12 12"
+            />
           </svg>
         </button>
       </motion.div>
     </div>
   );
-} 
+}

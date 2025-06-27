@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { AlertCircle, RefreshCw } from 'lucide-react';
+import React from "react";
+import { AlertCircle, RefreshCw } from "lucide-react";
 
 interface ErrorStateProps {
   message: string;
@@ -16,7 +16,8 @@ export default function ErrorState({ message, onRetry }: ErrorStateProps) {
         <div className="flex-1">
           <h3 className="text-lg font-semibold text-red-900 mb-2">{message}</h3>
           <p className="text-red-700 mb-4">
-            We're having trouble loading your benefits. This might be temporary.
+            We&apos;re having trouble loading your benefits. This might be
+            temporary.
           </p>
           <button
             className="inline-flex items-center space-x-2 bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors text-sm font-medium"
@@ -29,4 +30,4 @@ export default function ErrorState({ message, onRetry }: ErrorStateProps) {
       </div>
     </div>
   );
-} 
+}

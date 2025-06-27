@@ -1,6 +1,6 @@
-import React from 'react';
-import { DetailedDiscount } from '../../types';
-import { Card } from '../ui/card';
+import React from "react";
+import { DetailedDiscount } from "../../types";
+import { Card } from "../ui/card";
 
 interface DiscountCardProps {
   discount: DetailedDiscount;
@@ -15,7 +15,9 @@ const DiscountCard: React.FC<DiscountCardProps> = ({ discount }) => {
           <span className="font-semibold">Offer:</span> {discount.offer}
         </p>
         <p className="text-gray-600 mb-4">
-          <span className="font-semibold">Valid:</span> {new Date(discount.startDate).toLocaleDateString()} - {new Date(discount.endDate).toLocaleDateString()}
+          <span className="font-semibold">Valid:</span>{" "}
+          {new Date(discount.startDate).toLocaleDateString()} -{" "}
+          {new Date(discount.endDate).toLocaleDateString()}
         </p>
         <p className="text-gray-700 text-sm mb-4">{discount.description}</p>
         <button className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
@@ -26,4 +28,4 @@ const DiscountCard: React.FC<DiscountCardProps> = ({ discount }) => {
   );
 };
 
-export default DiscountCard; 
+export default DiscountCard;

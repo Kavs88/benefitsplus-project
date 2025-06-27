@@ -1,10 +1,10 @@
-import { getAllDiscounts } from '@/lib/actions/discount.actions';
-import { DiscountWithPartnerAndCategories } from '@/types';
-import DiscountCard from '@/components/shared/DiscountCard';
-import EmptyState from '@/components/shared/EmptyState';
-import { Button } from '@/components/ui/button';
-import Link from 'next/link';
-import React from 'react';
+import { getAllDiscounts } from "@/lib/actions/discount.actions";
+import { DiscountWithPartnerAndCategories } from "@/types";
+import DiscountCard from "@/components/shared/DiscountCard";
+import EmptyState from "@/components/shared/EmptyState";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import React from "react";
 
 const DiscountsPage = async () => {
   const discounts: DiscountWithPartnerAndCategories[] = await getAllDiscounts();
@@ -28,7 +28,10 @@ const DiscountsPage = async () => {
         </div>
       </section>
 
-      <section id="discounts" className="wrapper my-8 flex flex-col gap-8 md:gap-12">
+      <section
+        id="discounts"
+        className="wrapper my-8 flex flex-col gap-8 md:gap-12"
+      >
         {discounts && discounts.length > 0 ? (
           discountsCollection
         ) : (
@@ -44,4 +47,4 @@ const DiscountsPage = async () => {
   );
 };
 
-export default DiscountsPage; 
+export default DiscountsPage;

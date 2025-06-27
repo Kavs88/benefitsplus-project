@@ -1,10 +1,10 @@
-import React from 'react';
-import Link from 'next/link';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
-import { getEventsByOrganizer } from '@/lib/actions/event.actions';
-import { DetailedEvent } from '@/types';
-import { Button } from '@/components/ui/button';
+import React from "react";
+import Link from "next/link";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+import { getEventsByOrganizer } from "@/lib/actions/event.actions";
+import { DetailedEvent } from "@/types";
+import { Button } from "@/components/ui/button";
 
 export default async function MyEventsPage() {
   const session = await getServerSession(authOptions);
@@ -46,12 +46,20 @@ export default async function MyEventsPage() {
             {myEvents.map((event) => (
               <tr key={event.id} className="border-b">
                 <td className="p-4">{event.title}</td>
-                <td className="p-4">{event.isFree ? 'FREE' : `$${event.price}`}</td>
+                <td className="p-4">
+                  {event.isFree ? "FREE" : `$${event.price}`}
+                </td>
                 <td className="p-4 text-right">
-                  <Link href={`/events/${event.id}/update`} className="text-blue-600 hover:underline mr-4">
+                  <Link
+                    href={`/events/${event.id}/update`}
+                    className="text-blue-600 hover:underline mr-4"
+                  >
                     Edit
                   </Link>
-                  <Link href={`/events/${event.id}`} className="text-red-600 hover:underline">
+                  <Link
+                    href={`/events/${event.id}`}
+                    className="text-red-600 hover:underline"
+                  >
                     Delete
                   </Link>
                 </td>
@@ -62,9 +70,11 @@ export default async function MyEventsPage() {
       ) : (
         <div className="text-center py-16 border rounded-lg">
           <h2 className="h2-bold">No Events Yet</h2>
-          <p className="mt-2">You haven't created any events. Let's change that!</p>
+          <p className="mt-2">
+            You haven&apos;t created any events. Let&apos;s change that!
+          </p>
         </div>
       )}
     </div>
   );
-} 
+}

@@ -1,13 +1,13 @@
 // FINAL, PRODUCTION-READY CODE FOR: src/app/discounts/[id]/page.tsx
 
-import React from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
+import React from "react";
+import Image from "next/image";
+import Link from "next/link";
 import { getDiscountById } from "@/lib/actions/discount.actions";
-import { format } from 'date-fns';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { CalendarDays, User, Tag } from 'lucide-react';
+import { format } from "date-fns";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { CalendarDays, User, Tag } from "lucide-react";
 import { DiscountWithPartnerAndCategories } from "@/types";
 
 export default async function DiscountDetailPage({

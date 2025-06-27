@@ -1,5 +1,10 @@
 import * as React from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 
 // Local implementations for missing exports
@@ -27,17 +32,24 @@ export function AlertDialog({ children }: { children: React.ReactNode }) {
   );
 }
 
-export function AlertDialogTrigger({ asChild, children }: { asChild?: boolean; children: React.ReactNode }) {
+export function AlertDialogTrigger({
+  asChild,
+  children,
+}: {
+  asChild?: boolean;
+  children: React.ReactNode;
+}) {
   const context = React.useContext(AlertDialogContext);
-  if (!context) throw new Error("AlertDialogTrigger must be used within AlertDialog");
+  if (!context)
+    throw new Error("AlertDialogTrigger must be used within AlertDialog");
   const { setOpen } = context;
   if (asChild && React.isValidElement(children)) {
-    const child = children as React.ReactElement<any, any>;
+    const child = children as React.ReactElement<unknown, unknown>;
     const originalOnClick = child.props?.onClick;
     return React.cloneElement(child, {
       ...child.props,
-      onClick: (e: any) => {
-        if (typeof originalOnClick === 'function') originalOnClick(e);
+      onClick: (e: unknown) => {
+        if (typeof originalOnClick === "function") originalOnClick(e);
         setOpen(true);
       },
     });
@@ -45,7 +57,11 @@ export function AlertDialogTrigger({ asChild, children }: { asChild?: boolean; c
   return <button onClick={() => setOpen(true)}>{children}</button>;
 }
 
-export function AlertDialogContent({ children }: { children: React.ReactNode }) {
+export function AlertDialogContent({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return <DialogContent>{children}</DialogContent>;
 }
 
@@ -57,7 +73,11 @@ export function AlertDialogTitle({ children }: { children: React.ReactNode }) {
   return <DialogTitle>{children}</DialogTitle>;
 }
 
-export function AlertDialogDescription({ children }: { children: React.ReactNode }) {
+export function AlertDialogDescription({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return <DialogDescription>{children}</DialogDescription>;
 }
 
@@ -65,24 +85,45 @@ export function AlertDialogFooter({ children }: { children: React.ReactNode }) {
   return <DialogFooter>{children}</DialogFooter>;
 }
 
-export function AlertDialogAction({ children, ...props }: React.ComponentProps<typeof Button>) {
+export function AlertDialogAction({
+  children,
+  ...props
+}: React.ComponentProps<typeof Button>) {
   const context = React.useContext(AlertDialogContext);
-  if (!context) throw new Error("AlertDialogAction must be used within AlertDialog");
+  if (!context)
+    throw new Error("AlertDialogAction must be used within AlertDialog");
   const { setOpen } = context;
   return (
-    <Button {...props} onClick={(e) => { if (props.onClick) props.onClick(e); setOpen(false); }}>
+    <Button
+      {...props}
+      onClick={(e: unknown) => {
+        if (props.onClick) props.onClick(e);
+        setOpen(false);
+      }}
+    >
       {children}
     </Button>
   );
 }
 
-export function AlertDialogCancel({ children, ...props }: React.ComponentProps<typeof Button>) {
+export function AlertDialogCancel({
+  children,
+  ...props
+}: React.ComponentProps<typeof Button>) {
   const context = React.useContext(AlertDialogContext);
-  if (!context) throw new Error("AlertDialogCancel must be used within AlertDialog");
+  if (!context)
+    throw new Error("AlertDialogCancel must be used within AlertDialog");
   const { setOpen } = context;
   return (
-    <Button variant="outline" {...props} onClick={(e) => { if (props.onClick) props.onClick(e); setOpen(false); }}>
+    <Button
+      variant="outline"
+      {...props}
+      onClick={(e: unknown) => {
+        if (props.onClick) props.onClick(e);
+        setOpen(false);
+      }}
+    >
       {children}
     </Button>
   );
-} 
+}

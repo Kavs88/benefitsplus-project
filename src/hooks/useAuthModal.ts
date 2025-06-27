@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useSession, signOut } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from "react";
+import { useSession, signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 export function useAuthModal() {
   const [isSignInOpen, setIsSignInOpen] = useState(false);
@@ -36,17 +36,17 @@ export function useAuthModal() {
   };
 
   const handleSignOut = async () => {
-    await signOut({ callbackUrl: '/' });
+    await signOut({ callbackUrl: "/" });
   };
 
   // Redirect based on role after authentication
   useEffect(() => {
-    if (session?.user && status === 'authenticated') {
-      const role = (session.user as any).role;
-      if (role === 'partner') {
-        router.push('/dashboard/partner');
-      } else if (role === 'member') {
-        router.push('/dashboard/member');
+    if (session?.user && status === "authenticated") {
+      const role = (session.user as { role?: string }).role;
+      if (role === "partner") {
+        router.push("/dashboard/partner");
+      } else if (role === "member") {
+        router.push("/dashboard/member");
       }
       closeModals();
     }
@@ -64,4 +64,4 @@ export function useAuthModal() {
     switchToRegister,
     handleSignOut,
   };
-} 
+}
