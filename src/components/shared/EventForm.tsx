@@ -51,7 +51,6 @@ export function EventForm({
   categories,
 }: EventFormProps) {
   const router = useRouter();
-  const [files, setFiles] = useState<File[]>([]);
 
   const initialValues =
     event && type === "Update"
@@ -79,11 +78,9 @@ export function EventForm({
   const isFree = form.watch("isFree");
 
   async function onSubmit(values: EventFormValues) {
-    let eventData = { ...values, imageUrl: files.length > 0 ? files[0].name : values.imageUrl };
-    
     if (type === "Create") {
       try {
-        const newEvent = await createEvent({ event: eventData, userId });
+        const newEvent = await createEvent({ event: values, userId });
         if (newEvent) {
           form.reset();
           router.push(`/events/${newEvent.id}`);
@@ -102,7 +99,7 @@ export function EventForm({
       try {
         const updatedEvent = await updateEvent({
           userId,
-          event: { ...eventData, id: event.id },
+          event: { ...values, id: event.id },
         });
 
         if (updatedEvent) {
@@ -202,7 +199,6 @@ export function EventForm({
                   <FileUploader
                     onFieldChange={field.onChange}
                     imageUrl={field.value}
-                    setFiles={setFiles}
                   />
                 </FormControl>
                 <FormMessage />
@@ -349,7 +345,7 @@ export function EventForm({
         <Button
           type="submit"
           size="lg"
-          disabled={isSubmitting}
+          disabled={isSubmitting || !userId}
           className="button col-span-2 w-full"
         >
           {isSubmitting

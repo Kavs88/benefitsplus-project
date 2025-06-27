@@ -58,7 +58,7 @@ export async function getEventById(eventId: string) {
   }
 }
 
-export async function updateEvent({ event, userId }: { event: DetailedEvent & { id: string }, userId: string }) {
+export async function updateEvent({ event, userId }: { event: EventFormValues & { id: string }, userId: string }) {
   try {
     const eventToUpdate = await prisma.event.findUnique({
       where: { id: event.id },

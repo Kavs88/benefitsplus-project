@@ -6,6 +6,45 @@ const prisma = new PrismaClient();
 async function main() {
   console.log('🌱 Starting database seed...');
 
+  // Create sample categories
+  const wellnessCategory = await prisma.category.upsert({
+    where: { name: 'Wellness' },
+    update: {},
+    create: {
+      name: 'Wellness',
+      slug: 'wellness',
+    },
+  });
+
+  const foodCategory = await prisma.category.upsert({
+    where: { name: 'Food & Dining' },
+    update: {},
+    create: {
+      name: 'Food & Dining',
+      slug: 'food-dining',
+    },
+  });
+
+  const adventureCategory = await prisma.category.upsert({
+    where: { name: 'Adventure' },
+    update: {},
+    create: {
+      name: 'Adventure',
+      slug: 'adventure',
+    },
+  });
+
+  const entertainmentCategory = await prisma.category.upsert({
+    where: { name: 'Entertainment' },
+    update: {},
+    create: {
+      name: 'Entertainment',
+      slug: 'entertainment',
+    },
+  });
+
+  console.log('✅ Categories created');
+
   // Create sample users
   const hashedPassword = await hash('password123', 12);
 
@@ -84,10 +123,12 @@ async function main() {
       id: 'event-1',
       title: 'Yoga Retreat Weekend',
       description: 'Escape to a peaceful mountain retreat for a weekend of yoga, meditation, and wellness. Experience the perfect blend of relaxation and rejuvenation in the heart of the Rockies.',
-      date: new Date('2024-03-15T09:00:00Z'),
+      startDateTime: new Date('2024-03-15T09:00:00Z'),
+      endDateTime: new Date('2024-03-17T17:00:00Z'),
       location: 'Mountain View Resort',
-      city: 'Aspen, CO',
-      image: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400&h=300&fit=crop',
+      imageUrl: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400&h=300&fit=crop',
+      price: '299',
+      isFree: false,
       partnerId: partner1.id,
     },
   });
@@ -99,10 +140,12 @@ async function main() {
       id: 'event-2',
       title: 'Gourmet Cooking Class',
       description: 'Learn to cook authentic Italian cuisine with a master chef in an intimate setting. From pasta making to wine pairing, discover the secrets of Italian gastronomy.',
-      date: new Date('2024-03-20T18:00:00Z'),
+      startDateTime: new Date('2024-03-20T18:00:00Z'),
+      endDateTime: new Date('2024-03-20T22:00:00Z'),
       location: 'Culinary Institute',
-      city: 'San Francisco, CA',
-      image: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=300&fit=crop',
+      imageUrl: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=300&fit=crop',
+      price: '150',
+      isFree: false,
       partnerId: partner2.id,
     },
   });
@@ -114,10 +157,12 @@ async function main() {
       id: 'event-3',
       title: 'Adventure Photography Workshop',
       description: 'Capture stunning landscapes while hiking through scenic trails with professional guidance. Perfect for both beginners and advanced photographers.',
-      date: new Date('2024-03-25T07:00:00Z'),
+      startDateTime: new Date('2024-03-25T07:00:00Z'),
+      endDateTime: new Date('2024-03-25T18:00:00Z'),
       location: 'National Park',
-      city: 'Denver, CO',
-      image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop',
+      imageUrl: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop',
+      price: '200',
+      isFree: false,
       partnerId: partner3.id,
     },
   });
@@ -129,10 +174,12 @@ async function main() {
       id: 'event-4',
       title: 'Mindfulness Meditation Session',
       description: 'Join us for a transformative meditation session led by certified mindfulness instructors. Learn techniques for stress reduction and mental clarity.',
-      date: new Date('2024-03-30T10:00:00Z'),
+      startDateTime: new Date('2024-03-30T10:00:00Z'),
+      endDateTime: new Date('2024-03-30T12:00:00Z'),
       location: 'Zen Garden Center',
-      city: 'Aspen, CO',
-      image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop',
+      imageUrl: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop',
+      price: '0',
+      isFree: true,
       partnerId: partner1.id,
     },
   });

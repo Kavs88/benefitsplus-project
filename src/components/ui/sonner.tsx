@@ -1,11 +1,25 @@
-"use client";
+"use client"
 
-import * as React from "react";
-import { Toaster as SonnerToaster, toast as sonnerToast, ToastOptions } from "sonner";
+import { useTheme } from "next-themes"
+import { Toaster as Sonner, ToasterProps } from "sonner"
 
-export function Toaster(props: React.ComponentProps<typeof SonnerToaster>) {
-  return <SonnerToaster {...props} />;
+const Toaster = ({ ...props }: ToasterProps) => {
+  const { theme = "system" } = useTheme()
+
+  return (
+    <Sonner
+      theme={theme as ToasterProps["theme"]}
+      className="toaster group"
+      style={
+        {
+          "--normal-bg": "var(--popover)",
+          "--normal-text": "var(--popover-foreground)",
+          "--normal-border": "var(--border)",
+        } as React.CSSProperties
+      }
+      {...props}
+    />
+  )
 }
 
-// Re-export the toast function for convenience
-export const toast: typeof sonnerToast = sonnerToast; 
+export { Toaster }

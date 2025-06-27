@@ -1,112 +1,142 @@
-// FINAL, PRODUCTION-READY CODE FOR: src/app/events/[id]/page.tsx
+"use client";
 
-import React from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
-import { DetailedEvent } from '@/types';
-import { formatDateTime } from '@/lib/utils';
-import { getEventById } from '@/lib/actions/event.actions';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { CalendarDays, Clock, MapPin, User, Tag } from 'lucide-react';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
-import { DeleteConfirmation } from '@/components/shared/DeleteConfirmation';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
+import { deleteEvent } from "@/lib/actions/event.actions";
+import { getEventById } from "@/lib/actions/event.actions";
+import { Event as IEvent } from "@prisma/client";
+import { useSession } from "next-auth/react";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
-export default async function EventDetailPage({ params }: { params: { id: string } }) {
-  const session = await getServerSession(authOptions);
-  const userId = session?.user?.id;
-  const event: DetailedEvent | null = await getEventById(params.id);
+const EventDetailsPage = ({ params }: { params: { id: string } }) => {
+  const { data: session } = useSession();
+  const router = useRouter();
+  const [event, setEvent] = useState<IEvent | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isDeleting, setIsDeleting] = useState(false);
 
-  if (!event) {
+  useEffect(() => {
+    const fetchEvent = async () => {
+      try {
+        const fetchedEvent = await getEventById(params.id);
+        setEvent(fetchedEvent);
+      } catch (error) {
+        console.error("Failed to fetch event:", error);
+        toast.error("Failed to load event details.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchEvent();
+  }, [params.id]);
+
+  const handleDelete = async () => {
+    if (!event) return;
+    setIsDeleting(true);
+    try {
+      await deleteEvent({ eventId: event.id });
+      toast.success("Event deleted successfully!");
+      router.push("/events");
+    } catch (error) {
+      console.error("Failed to delete event:", error);
+      toast.error("Failed to delete the event. Please try again.");
+      setIsDeleting(false);
+    }
+  };
+
+  if (isLoading) {
     return (
-      <main className="wrapper my-8 text-center">
-        <h1 className="h1-bold mb-4">Event Not Found</h1>
-        <p className="p-regular-20 text-gray-600 mb-6">The event you're looking for doesn't exist or has been moved.</p>
-        <Button asChild>
-          <Link href="/events">Back to All Events</Link>
-        </Button>
-      </main>
+      <div className="flex justify-center items-center h-screen">
+        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div>
+      </div>
     );
   }
 
-  const isOrganizer = userId === event.partnerId;
+  if (!event) {
+    return (
+      <div className="flex flex-col justify-center items-center h-screen text-center">
+        <h2 className="text-2xl font-bold mb-4">Event Not Found</h2>
+        <p className="text-gray-600 mb-8">
+          Sorry, we couldn&apos;t find the event you&apos;re looking for.
+        </p>
+        <Button onClick={() => router.push("/events")}>Go Back to Events</Button>
+      </div>
+    );
+  }
+
+  const isAuthor = session?.user?.id === event.partnerId;
 
   return (
-    <section className="wrapper my-8">
-      <div className="flex justify-between items-start">
-        <h1 className="h1-bold mb-4">{event.title}</h1>
-        {isOrganizer && (
-          <div className="flex gap-4">
-            <Button asChild>
-              <Link href={`/events/${event.id}/update`}>Edit Event</Link>
-            </Button>
-            <DeleteConfirmation eventId={event.id} />
-          </div>
-        )}
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
-        
-        <div className="w-full h-[300px] md:h-auto rounded-lg overflow-hidden shadow-lg bg-gray-200">
+    <section className="container mx-auto px-4 py-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div>
           <Image
-            src={event.imageUrl}
+            src={event.image || "/placeholder.png"}
             alt={event.title}
-            width={1000}
-            height={1000}
-            className="w-full h-full object-cover object-center"
-            priority
+            width={600}
+            height={400}
+            className="rounded-lg object-cover"
           />
         </div>
-
-        <div className="flex flex-col gap-6">
-          <div className="flex flex-wrap items-center gap-3">
-            <Badge variant="secondary">
-              <User className="w-4 h-4 mr-2" />
-              {event.partner?.name || 'Unknown Organizer'}
-            </Badge>
-            {event.categories?.[0] && (
-               <Badge>
-                 <Tag className="w-4 h-4 mr-2" />
-                 {event.categories[0].name}
-               </Badge>
-            )}
-            <Badge variant="outline" className="text-lg font-semibold">
-              {event.isFree ? 'FREE' : `$${event.price}`}
-            </Badge>
-          </div>
-
-          <div className="flex flex-col gap-4 text-gray-700">
-            <div className="flex items-center gap-3">
-              <CalendarDays className="w-5 h-5 text-gray-500" />
-              <p className="p-medium-16">
-                {formatDateTime(event.startDateTime).dateOnly} - {formatDateTime(event.endDateTime).dateOnly}
-              </p>
-            </div>
-            <div className="flex items-center gap-3">
-              <Clock className="w-5 h-5 text-gray-500" />
-              <p className="p-medium-16">
-                {formatDateTime(event.startDateTime).timeOnly} - {formatDateTime(event.endDateTime).timeOnly}
-              </p>
-            </div>
-            <div className="flex items-center gap-3">
-              <MapPin className="w-5 h-5 text-gray-500" />
-              <p className="p-medium-16">{event.location}</p>
-            </div>
-          </div>
-
+        <div className="flex flex-col justify-between">
           <div>
-            <h3 className="p-bold-20">About This Event</h3>
-            <p className="p-regular-16 mt-2 leading-relaxed">
-              {event.description || 'No description available.'}
-            </p>
+            <h1 className="text-4xl font-bold mb-2">{event.title}</h1>
+            <p className="text-lg text-gray-700 mb-4">{event.description}</p>
+            <div className="flex items-center gap-4 mb-4">
+              <span className="font-semibold">Date:</span>
+              <span>{new Date(event.date).toLocaleDateString()}</span>
+            </div>
+            <div className="flex items-center gap-4 mb-4">
+              <span className="font-semibold">Location:</span>
+              <span>{event.location}</span>
+            </div>
           </div>
-
-          <Button size="lg" className="w-full mt-4">
-            Buy Ticket
-          </Button>
+          {isAuthor && (
+            <div className="flex gap-4 mt-auto">
+              <Link href={`/events/${event.id}/update`}>
+                <Button>Edit Event</Button>
+              </Link>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button variant="destructive" disabled={isDeleting}>
+                    {isDeleting ? "Deleting..." : "Delete"}
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This action cannot be undone. This will permanently delete the event.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction onClick={handleDelete} disabled={isDeleting}>
+                      Continue
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </div>
+          )}
         </div>
       </div>
     </section>
   );
-}
+};
+
+export default EventDetailsPage;

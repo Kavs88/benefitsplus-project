@@ -3,10 +3,12 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { EventForm } from "@/components/shared/EventForm";
+import { getAllCategories } from "@/lib/actions/category.actions";
 
 export default async function CreateEventPage() {
   const session = await getServerSession(authOptions);
   const userId = session?.user?.id;
+  const categories = await getAllCategories();
 
   if (!userId) {
     return (
@@ -23,7 +25,7 @@ export default async function CreateEventPage() {
         <h1 className="wrapper h1-bold text-center sm:text-left">Create Event</h1>
       </section>
       <div className="wrapper my-8">
-        <EventForm userId={userId} />
+        <EventForm userId={userId} type="Create" categories={categories} />
       </div>
     </>
   );
