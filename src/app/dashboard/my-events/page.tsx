@@ -51,7 +51,6 @@ export default async function MyEventsPage() {
                   <Link href={`/events/${event.id}/update`} className="text-blue-600 hover:underline mr-4">
                     Edit
                   </Link>
-                  {/* For now, a simple link. Ideally, this would use the DeleteConfirmation component */}
                   <Link href={`/events/${event.id}`} className="text-red-600 hover:underline">
                     Delete
                   </Link>
