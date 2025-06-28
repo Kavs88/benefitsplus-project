@@ -8,6 +8,8 @@ declare module "next-auth" {
     user: {
       /** The user's role. */
       role?: string | null;
+      /** The user's id. */
+      id: string;
     } & DefaultSession["user"];
   }
 
@@ -17,6 +19,8 @@ declare module "next-auth" {
   interface User extends DefaultUser {
     /** The user's role. */
     role?: string | null;
+    /** The user's id. */
+    id: string;
   }
 }
 

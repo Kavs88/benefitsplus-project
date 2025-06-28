@@ -18,3 +18,6 @@ export const uploadRouter = {
 } satisfies FileRouter;
 
 export type OurFileRouter = typeof uploadRouter;
+
+// Export the handler for Next.js
+export const { GET, POST } = f(uploadRouter);
